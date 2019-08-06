@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Results &mdash; pliers 0.2 documentation</title>
+  <title>Results &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="index.html"/>
+    <link rel="top" title="pliers 0.3.0 documentation" href="index.html"/>
         <link rel="next" title="Configuring pliers" href="config.html"/>
         <link rel="prev" title="Graphs" href="graphs.html"/> 
 
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -184,7 +184,7 @@
 <p>Pliers is meant to provide a unified interface to a wide range of feature extraction tools and services, so it’s imperative that the results we get back from different extractors can also be represented and accessed in a standardized way. In this section, we provide a detailed description of the pliers <a class="reference internal" href="generated/pliers.extractors.ExtractorResult.html#pliers.extractors.ExtractorResult" title="pliers.extractors.ExtractorResult"><code class="xref py py-class docutils literal"><span class="pre">ExtractorResult</span></code></a> class and the various options available for exporting results to pandas DataFrames. In many typical workflows, the export process will be done implicitly, so that all a user has to worry about is making sure to specify appropriate formatting arguments. In particular, if you only ever work with the <a class="reference internal" href="graphs.html#graphs"><span class="std std-ref">Graph API</span></a>, you may want to skip down to the <a class="reference internal" href="#graph-results"><span class="std std-ref">Graph results</span></a> section.</p>
 <div class="section" id="the-extractorresult-class">
 <h2>The ExtractorResult class<a class="headerlink" href="#the-extractorresult-class" title="Permalink to this headline">¶</a></h2>
-<p>Calling <code class="docutils literal"><span class="pre">transform()</span></code> on an instantiated <a class="reference internal" href="generated/pliers.extractors.Extractor.html#pliers.extractors.Extractor" title="pliers.extractors.Extractor"><code class="xref py py-class docutils literal"><span class="pre">Extractor</span></code></a> returns an object of class <a class="reference internal" href="generated/pliers.extractors.ExtractorResult.html#pliers.extractors.ExtractorResult" title="pliers.extractors.ExtractorResult"><code class="xref py py-class docutils literal"><span class="pre">ExtractorResult</span></code></a>. This is a lightweight container that contains all of the extracted feature information returned by the <a class="reference internal" href="generated/pliers.extractors.Extractor.html#pliers.extractors.Extractor" title="pliers.extractors.Extractor"><code class="xref py py-class docutils literal"><span class="pre">Extractor</span></code></a>, references to the <code class="xref py py-class docutils literal"><span class="pre">Stim</span></code> and <a class="reference internal" href="generated/pliers.extractors.Extractor.html#pliers.extractors.Extractor" title="pliers.extractors.Extractor"><code class="xref py py-class docutils literal"><span class="pre">Extractor</span></code></a> objects used to generate the result, and both “raw” and processed forms of the results returned by the <a class="reference internal" href="generated/pliers.extractors.Extractor.html#pliers.extractors.Extractor" title="pliers.extractors.Extractor"><code class="xref py py-class docutils literal"><span class="pre">Extractor</span></code></a> (though note that many Extractors don’t set a <code class="docutils literal"><span class="pre">.raw</span></code> attribute). For example:</p>
+<p>Calling <code class="docutils literal"><span class="pre">transform()</span></code> on an instantiated <a class="reference internal" href="generated/pliers.extractors.Extractor.html#pliers.extractors.Extractor" title="pliers.extractors.Extractor"><code class="xref py py-class docutils literal"><span class="pre">Extractor</span></code></a> returns an object of class <a class="reference internal" href="generated/pliers.extractors.ExtractorResult.html#pliers.extractors.ExtractorResult" title="pliers.extractors.ExtractorResult"><code class="xref py py-class docutils literal"><span class="pre">ExtractorResult</span></code></a>. This is a lightweight container that contains all of the extracted feature information returned by the <a class="reference internal" href="generated/pliers.extractors.Extractor.html#pliers.extractors.Extractor" title="pliers.extractors.Extractor"><code class="xref py py-class docutils literal"><span class="pre">Extractor</span></code></a>, references to the <code class="xref py py-class docutils literal"><span class="pre">Stim</span></code> and <a class="reference internal" href="generated/pliers.extractors.Extractor.html#pliers.extractors.Extractor" title="pliers.extractors.Extractor"><code class="xref py py-class docutils literal"><span class="pre">Extractor</span></code></a> objects used to generate the result, and both “raw” and processed forms of the results returned by the <a class="reference internal" href="generated/pliers.extractors.Extractor.html#pliers.extractors.Extractor" title="pliers.extractors.Extractor"><code class="xref py py-class docutils literal"><span class="pre">Extractor</span></code></a> (though note that many Extractors don’t set a <code class="docutils literal"><span class="pre">.raw</span></code> property). For example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pliers.extractors</span> <span class="kn">import</span> <span class="n">FaceRecognitionFaceLocationsExtractor</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ext</span> <span class="o">=</span> <span class="n">FaceRecognitionFaceLocationsExtractor</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">ext</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
@@ -197,9 +197,6 @@
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="o">.</span><span class="n">raw</span>
 <span class="go">[(142, 349, 409, 82)]</span>
-
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="o">.</span><span class="n">data</span>
-<span class="go">array([[142, 349, 409,  82]])</span>
 </pre></div>
 </div>
 <div class="section" id="exporting-results-to-pandas-dataframes">
@@ -419,7 +416,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

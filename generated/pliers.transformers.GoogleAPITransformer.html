@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pliers.transformers.GoogleAPITransformer &mdash; pliers 0.2 documentation</title>
+  <title>pliers.transformers.GoogleAPITransformer &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="../index.html"/>
+    <link rel="top" title="pliers 0.3.0 documentation" href="../index.html"/>
         <link rel="up" title="Pliers API Reference" href="../reference.html"/>
         <link rel="next" title="pliers.transformers.GoogleVisionAPITransformer" href="pliers.transformers.GoogleVisionAPITransformer.html"/>
         <link rel="prev" title="pliers.transformers.BatchTransformerMixin" href="pliers.transformers.BatchTransformerMixin.html"/> 
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -188,23 +188,21 @@
 <h1>pliers.transformers.GoogleAPITransformer<a class="headerlink" href="#pliers-transformers-googleapitransformer" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="pliers.transformers.GoogleAPITransformer">
-<em class="property">class </em><code class="descclassname">pliers.transformers.</code><code class="descname">GoogleAPITransformer</code><span class="sig-paren">(</span><em>discovery_file=None</em>, <em>api_version='v1'</em>, <em>max_results=100</em>, <em>num_retries=3</em>, <em>handle_annotations=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/transformers/google.html#GoogleAPITransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.transformers.GoogleAPITransformer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">pliers.transformers.base.Transformer</span></code>, <code class="xref py py-class docutils literal"><span class="pre">pliers.utils.base.EnvironmentKeyMixin</span></code></p>
+<em class="property">class </em><code class="descclassname">pliers.transformers.</code><code class="descname">GoogleAPITransformer</code><span class="sig-paren">(</span><em>discovery_file=None</em>, <em>api_version='v1'</em>, <em>max_results=100</em>, <em>num_retries=3</em>, <em>rate_limit=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/transformers/api/google.html#GoogleAPITransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.transformers.GoogleAPITransformer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">pliers.transformers.api.base.APITransformer</span></code></p>
 <p>Base GoogleAPITransformer class.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>discovery_file</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – path to discovery file containing Google
+<li><strong>discovery_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – path to discovery file containing Google
 application credentials.</li>
-<li><strong>api_version</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – API version to use.</li>
-<li><strong>max_results</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Max number of results per page.</li>
-<li><strong>num_retries</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of times to retry query on failure.</li>
-<li><strong>handle_annotations</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – How returned annotations should be handled in
-cases where there are multiple values for a single stim. Valid values
-depend on Transformer, but are always one of ‘first’, ‘list’, ‘prefix’,
-or ‘concatenate’.</li>
+<li><strong>api_version</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – API version to use.</li>
+<li><strong>max_results</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Max number of results per page.</li>
+<li><strong>num_retries</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of times to retry query on failure.</li>
+<li><strong>rate_limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The minimum number of seconds required between
+transform calls on this Transformer.</li>
 </ul>
 </td>
 </tr>
@@ -212,7 +210,7 @@ or ‘concatenate’.</li>
 </table>
 <dl class="method">
 <dt id="pliers.transformers.GoogleAPITransformer.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>discovery_file=None</em>, <em>api_version='v1'</em>, <em>max_results=100</em>, <em>num_retries=3</em>, <em>handle_annotations=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/transformers/google.html#GoogleAPITransformer.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.transformers.GoogleAPITransformer.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>discovery_file=None</em>, <em>api_version='v1'</em>, <em>max_results=100</em>, <em>num_retries=3</em>, <em>rate_limit=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/transformers/api/google.html#GoogleAPITransformer.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.transformers.GoogleAPITransformer.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -224,7 +222,7 @@ or ‘concatenate’.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>stims</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>, </em><em>Stim</em><em>, </em><em>list</em>) – <p>One or more stimuli to process. Must be
+<li><strong>stims</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>Stim</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – <p>One or more stimuli to process. Must be
 one of:</p>
 <blockquote>
 <div><ul>
@@ -236,7 +234,7 @@ string or a Stim.</li>
 </ul>
 </div></blockquote>
 </li>
-<li><strong>validation</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – <p>String specifying how validation errors should
+<li><strong>validation</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – <p>String specifying how validation errors should
 be handled. Must be one of:</p>
 <blockquote>
 <div><ul>
@@ -305,7 +303,7 @@ _transform call.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

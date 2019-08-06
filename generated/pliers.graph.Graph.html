@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pliers.graph.Graph &mdash; pliers 0.2 documentation</title>
+  <title>pliers.graph.Graph &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="../index.html"/>
+    <link rel="top" title="pliers 0.3.0 documentation" href="../index.html"/>
         <link rel="up" title="Pliers API Reference" href="../reference.html"/>
         <link rel="next" title="pliers.graph.Node" href="pliers.graph.Node.html"/>
         <link rel="prev" title="pliers.extractors.merge_results" href="pliers.extractors.merge_results.html"/> 
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -186,17 +186,17 @@
 <dl class="class">
 <dt id="pliers.graph.Graph">
 <em class="property">class </em><code class="descclassname">pliers.graph.</code><code class="descname">Graph</code><span class="sig-paren">(</span><em>nodes=None</em>, <em>spec=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/graph.html#Graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.graph.Graph" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Graph-like structure that represents an entire pliers workflow.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>nodes</strong> (<em>list</em><em>, </em><a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) – Optional nodes to add to the Graph at construction.
+<li><strong>nodes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – Optional nodes to add to the Graph at construction.
 If a dict, must have a ‘roots’ key. If a list, each element must be
 in one of the forms accepted by add_nodes().</li>
-<li><strong>spec</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – An optional path to a .json file containing the graph
+<li><strong>spec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – An optional path to a .json file containing the graph
 specification.</li>
 </ul>
 </td>
@@ -229,20 +229,20 @@ specification.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>transformer</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>, </em><a class="reference internal" href="pliers.transformers.Transformer.html#pliers.transformers.Transformer" title="pliers.transformers.Transformer"><em>Transformer</em></a>) – The pliers Transformer to use at
+<li><strong>transformer</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><a class="reference internal" href="pliers.transformers.Transformer.html#pliers.transformers.Transformer" title="pliers.transformers.Transformer"><em>Transformer</em></a>) – The pliers Transformer to use at
 the to-be-added node. Either a case-insensitive string giving
 the name of a Transformer class, or an initialized Transformer
 instance.</li>
-<li><strong>name</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Optional name to give this Node.</li>
-<li><strong>children</strong> (<em>list</em>) – Optional list of child nodes (i.e., nodes to pass
+<li><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Optional name to give this Node.</li>
+<li><strong>children</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – Optional list of child nodes (i.e., nodes to pass
 the to-be-added node’s Transformer output to).</li>
 <li><strong>parent</strong> (<a class="reference internal" href="pliers.graph.Node.html#pliers.graph.Node" title="pliers.graph.Node"><em>Node</em></a>) – Optional node from which the to-be-added Node
 receives its input.</li>
-<li><strong>parameters</strong> (<a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) – Optional keyword arguments to pass onto the
+<li><strong>parameters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – Optional keyword arguments to pass onto the
 Transformer initialized at this Node if a string is passed to
 the ‘transformer’ argument. Ignored if an already-initialized
 Transformer is passed.</li>
-<li><strong>return_node</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – If True, returns the initialized Node instance.</li>
+<li><strong>return_node</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – If True, returns the initialized Node instance.</li>
 </ul>
 </td>
 </tr>
@@ -267,7 +267,7 @@ Transformer is passed.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>nodes</strong> (<em>list</em>) – <p>A list of nodes to add. Each element must be one of
+<li><strong>nodes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – <p>A list of nodes to add. Each element must be one of
 the following:</p>
 <ul>
 <li>A dict containing keyword args to pass onto to the Node init.</li>
@@ -284,7 +284,7 @@ node.</li>
 <li><strong>parent</strong> (<a class="reference internal" href="pliers.graph.Node.html#pliers.graph.Node" title="pliers.graph.Node"><em>Node</em></a>) – Optional parent node (i.e., the node containing the
 pliers Transformer from which the to-be-created nodes receive
 their inputs).</li>
-<li><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – <p>Indicates the direction with which to add the new nodes
+<li><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – <p>Indicates the direction with which to add the new nodes
 * horizontal: the nodes should each be added as a child of the</p>
 <blockquote>
 <div>’parent’ argument (or a Graph root by default).</div></blockquote>
@@ -311,8 +311,8 @@ the child of the previous node in the list.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Path to save the generated image to.</li>
-<li><strong>color</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – If True, will color graph nodes based on their type,
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Path to save the generated image to.</li>
+<li><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – If True, will color graph nodes based on their type,
 otherwise will draw a black-and-white graph.</li>
 </ul>
 </td>
@@ -330,9 +330,9 @@ otherwise will draw a black-and-white graph.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>stim</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>, </em><em>Stim</em><em>, </em><em>list</em>) – One or more valid inputs to any
+<li><strong>stim</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>Stim</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – One or more valid inputs to any
 Transformer’s ‘transform’ call.</li>
-<li><strong>merge</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – If True, all results are merged into a single pandas
+<li><strong>merge</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – If True, all results are merged into a single pandas
 DataFrame before being returned. If False, a list of
 ExtractorResult objects is returned (one per Extractor/Stim
 combination).</li>
@@ -354,9 +354,9 @@ merge_results() call.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>node</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>, </em><a class="reference internal" href="pliers.graph.Node.html#pliers.graph.Node" title="pliers.graph.Node"><em>Node</em></a>) – If a string, the name of the Node in the current
+<li><strong>node</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><a class="reference internal" href="pliers.graph.Node.html#pliers.graph.Node" title="pliers.graph.Node"><em>Node</em></a>) – If a string, the name of the Node in the current
 Graph. Otherwise the Node instance to execute.</li>
-<li><strong>stim</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>, </em><em>stim</em><em>, </em><em>list</em>) – Any valid input to the Transformer stored
+<li><strong>stim</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>stim</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – Any valid input to the Transformer stored
 at the target node.</li>
 </ul>
 </td>
@@ -375,7 +375,7 @@ Graph(spec=filename).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Path at which to write out the json file.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Path at which to write out the json file.</td>
 </tr>
 </tbody>
 </table>
@@ -396,9 +396,9 @@ Graph(spec=filename).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>stim</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>, </em><em>Stim</em><em>, </em><em>list</em>) – One or more valid inputs to any
+<li><strong>stim</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>Stim</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – One or more valid inputs to any
 Transformer’s ‘transform’ call.</li>
-<li><strong>merge</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – If True, all results are merged into a single pandas
+<li><strong>merge</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – If True, all results are merged into a single pandas
 DataFrame before being returned. If False, a list of
 ExtractorResult objects is returned (one per Extractor/Stim
 combination).</li>
@@ -459,7 +459,7 @@ merge_results() call.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

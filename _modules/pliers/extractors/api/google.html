@@ -1,0 +1,860 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pliers.extractors.api.google &mdash; pliers 0.3.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../../search.html"/>
+    <link rel="top" title="pliers 0.3.0 documentation" href="../../../../index.html"/>
+        <link rel="up" title="Module code" href="../../../index.html"/> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> pliers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installing pliers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basic-concepts.html">Basic concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stimuli.html">Stims</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../transformers.html">Transformers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../graphs.html">Graphs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../results.html">Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../config.html">Configuring pliers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../reference.html">Pliers API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">pliers</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>pliers.extractors.api.google</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pliers.extractors.api.google</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39; Google API-based feature extraction classes. &#39;&#39;&#39;</span>
+
+<span class="kn">from</span> <span class="nn">pliers.extractors.image</span> <span class="k">import</span> <span class="n">ImageExtractor</span>
+<span class="kn">from</span> <span class="nn">pliers.extractors.text</span> <span class="k">import</span> <span class="n">TextExtractor</span>
+<span class="kn">from</span> <span class="nn">pliers.extractors.video</span> <span class="k">import</span> <span class="n">VideoExtractor</span>
+<span class="kn">from</span> <span class="nn">pliers.transformers</span> <span class="k">import</span> <span class="p">(</span><span class="n">GoogleAPITransformer</span><span class="p">,</span>
+                                 <span class="n">GoogleVisionAPITransformer</span><span class="p">,</span>
+                                 <span class="n">GoogleAPITransformer</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pliers.extractors.base</span> <span class="k">import</span> <span class="n">ExtractorResult</span>
+<span class="kn">from</span> <span class="nn">pliers.utils</span> <span class="k">import</span> <span class="n">flatten_dict</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+
+
+<span class="k">class</span> <span class="nc">GoogleVisionAPIExtractor</span><span class="p">(</span><span class="n">GoogleVisionAPITransformer</span><span class="p">,</span> <span class="n">ImageExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Base class for all Extractors that use the Google Vision API. &#39;&#39;&#39;</span>
+
+    <span class="n">VERSION</span> <span class="o">=</span> <span class="s1">&#39;1.0&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stims</span><span class="p">):</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_request</span><span class="p">(</span><span class="n">stims</span><span class="p">)</span>
+        <span class="n">responses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_api</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">response</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">responses</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">response</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_object</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+                <span class="n">raw</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">response_object</span><span class="p">]</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ExtractorResult</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="n">stims</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="s1">&#39;error&#39;</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">][</span><span class="s1">&#39;message&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ExtractorResult</span><span class="p">([{}],</span> <span class="n">stims</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">results</span>
+
+
+<div class="viewcode-block" id="GoogleVisionAPIFaceExtractor"><a class="viewcode-back" href="../../../../generated/pliers.extractors.GoogleVisionAPIFaceExtractor.html#pliers.extractors.GoogleVisionAPIFaceExtractor">[docs]</a><span class="k">class</span> <span class="nc">GoogleVisionAPIFaceExtractor</span><span class="p">(</span><span class="n">GoogleVisionAPIExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Identifies faces in images using the Google Cloud Vision API. &#39;&#39;&#39;</span>
+
+    <span class="n">request_type</span> <span class="o">=</span> <span class="s1">&#39;FACE_DETECTION&#39;</span>
+    <span class="n">response_object</span> <span class="o">=</span> <span class="s1">&#39;faceAnnotations&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">handle_annotations</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Converts a Google API Face JSON response into a Pandas Dataframe.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result (ExtractorResult): Result object from which to parse out a</span>
+<span class="sd">                Dataframe.</span>
+<span class="sd">            handle_annotations (str): How returned face annotations should be</span>
+<span class="sd">                handled in cases where there are multiple faces.</span>
+<span class="sd">                &#39;first&#39; indicates to only use the first face JSON object, all</span>
+<span class="sd">                other values will default to including every face.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">annotations</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">_data</span>
+        <span class="k">if</span> <span class="n">handle_annotations</span> <span class="o">==</span> <span class="s1">&#39;first&#39;</span><span class="p">:</span>
+            <span class="n">annotations</span> <span class="o">=</span> <span class="p">[</span><span class="n">annotations</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+
+        <span class="n">face_results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">annotation</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">annotations</span><span class="p">):</span>
+            <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">annotation</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="s1">&#39;Confidence&#39;</span> <span class="ow">in</span> <span class="n">field</span><span class="p">:</span>
+                    <span class="n">data_dict</span><span class="p">[</span><span class="s1">&#39;face_&#39;</span> <span class="o">+</span> <span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+                <span class="k">elif</span> <span class="s1">&#39;oundingPoly&#39;</span> <span class="ow">in</span> <span class="n">field</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">vertex</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="s1">&#39;vertices&#39;</span><span class="p">]):</span>
+                        <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">]:</span>
+                            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_vertex</span><span class="si">%d</span><span class="s1">_</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>
+                            <span class="n">val</span> <span class="o">=</span> <span class="n">vertex</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="k">if</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">vertex</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                            <span class="n">data_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+                <span class="k">elif</span> <span class="n">field</span> <span class="o">==</span> <span class="s1">&#39;landmarks&#39;</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">lm</span> <span class="ow">in</span> <span class="n">val</span><span class="p">:</span>
+                        <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;landmark_&#39;</span> <span class="o">+</span> <span class="n">lm</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_</span><span class="si">%s</span><span class="s1">&#39;</span>
+                        <span class="n">lm_pos</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span> <span class="o">%</span>
+                                  <span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">lm</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+                        <span class="n">data_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">lm_pos</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">data_dict</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+            <span class="n">face_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_dict</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">face_results</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GoogleVisionAPILabelExtractor"><a class="viewcode-back" href="../../../../generated/pliers.extractors.GoogleVisionAPILabelExtractor.html#pliers.extractors.GoogleVisionAPILabelExtractor">[docs]</a><span class="k">class</span> <span class="nc">GoogleVisionAPILabelExtractor</span><span class="p">(</span><span class="n">GoogleVisionAPIExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Labels objects in images using the Google Cloud Vision API. &#39;&#39;&#39;</span>
+
+    <span class="n">request_type</span> <span class="o">=</span> <span class="s1">&#39;LABEL_DETECTION&#39;</span>
+    <span class="n">response_object</span> <span class="o">=</span> <span class="s1">&#39;labelAnnotations&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{</span><span class="n">label</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]:</span> <span class="n">label</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">_data</span> <span class="k">if</span> <span class="n">label</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">res</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="GoogleVisionAPIPropertyExtractor"><a class="viewcode-back" href="../../../../generated/pliers.extractors.GoogleVisionAPIPropertyExtractor.html#pliers.extractors.GoogleVisionAPIPropertyExtractor">[docs]</a><span class="k">class</span> <span class="nc">GoogleVisionAPIPropertyExtractor</span><span class="p">(</span><span class="n">GoogleVisionAPIExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Extracts image properties using the Google Cloud Vision API. &#39;&#39;&#39;</span>
+
+    <span class="n">request_type</span> <span class="o">=</span> <span class="s1">&#39;IMAGE_PROPERTIES&#39;</span>
+    <span class="n">response_object</span> <span class="o">=</span> <span class="s1">&#39;imagePropertiesAnnotation&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;dominantColors&#39;</span><span class="p">][</span><span class="s1">&#39;colors&#39;</span><span class="p">]</span>
+        <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">colors</span><span class="p">:</span>
+            <span class="n">rgb</span> <span class="o">=</span> <span class="n">color</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="p">[</span><span class="n">rgb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">rgb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">rgb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">key</span><span class="p">])</span>
+            <span class="n">data_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">data_dict</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="GoogleVisionAPISafeSearchExtractor"><a class="viewcode-back" href="../../../../generated/pliers.extractors.GoogleVisionAPISafeSearchExtractor.html#pliers.extractors.GoogleVisionAPISafeSearchExtractor">[docs]</a><span class="k">class</span> <span class="nc">GoogleVisionAPISafeSearchExtractor</span><span class="p">(</span><span class="n">GoogleVisionAPIExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Extracts safe search detection using the Google Cloud Vision API. &#39;&#39;&#39;</span>
+
+    <span class="n">request_type</span> <span class="o">=</span> <span class="s1">&#39;SAFE_SEARCH_DETECTION&#39;</span>
+    <span class="n">response_object</span> <span class="o">=</span> <span class="s1">&#39;safeSearchAnnotation&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">result</span><span class="o">.</span><span class="n">_data</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="GoogleVisionAPIWebEntitiesExtractor"><a class="viewcode-back" href="../../../../generated/pliers.extractors.GoogleVisionAPIWebEntitiesExtractor.html#pliers.extractors.GoogleVisionAPIWebEntitiesExtractor">[docs]</a><span class="k">class</span> <span class="nc">GoogleVisionAPIWebEntitiesExtractor</span><span class="p">(</span><span class="n">GoogleVisionAPIExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Extracts web entities using the Google Cloud Vision API. &#39;&#39;&#39;</span>
+
+    <span class="n">request_type</span> <span class="o">=</span> <span class="s1">&#39;WEB_DETECTION&#39;</span>
+    <span class="n">response_object</span> <span class="o">=</span> <span class="s1">&#39;webDetection&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="s1">&#39;webEntities&#39;</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;webEntities&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;description&#39;</span> <span class="ow">in</span> <span class="n">entity</span> <span class="ow">and</span> <span class="s1">&#39;score&#39;</span> <span class="ow">in</span> <span class="n">entity</span><span class="p">:</span>
+                    <span class="n">data_dict</span><span class="p">[</span><span class="n">entity</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">data_dict</span><span class="p">])</span></div>
+
+
+<span class="k">class</span> <span class="nc">GoogleVideoIntelligenceAPIExtractor</span><span class="p">(</span><span class="n">GoogleAPITransformer</span><span class="p">,</span> <span class="n">VideoExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Extracts object features from videos using the Google Vision Video</span>
+<span class="sd">    Intelligence API.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        features (list): List of features to extract. LABEL_DETECTION extracts</span>
+<span class="sd">            tags present throughout the provided segments (full video if none</span>
+<span class="sd">            provided) as well as throughout the shots (depending on config).</span>
+<span class="sd">            SHOT_CHANGE_DETECTION extracts a shot feature with onsets and</span>
+<span class="sd">            durations corresponding to shot changes in the video.</span>
+<span class="sd">            EXPLICIT_CONTENT_DETECTION extracts any frame onsets of explicit</span>
+<span class="sd">            material.</span>
+<span class="sd">        segments (list): List of JSON objects or dictionaries. Each dictionary</span>
+<span class="sd">            should contain a startTimeOffset and an endTimeOffset field with</span>
+<span class="sd">            timestamps of the format XX.XXs marking the desired segments upon</span>
+<span class="sd">            which to extract features.</span>
+<span class="sd">        config (dict): JSON object representing the desired configuration for</span>
+<span class="sd">            extraction. See the Google Cloud Video Intelligence documentation</span>
+<span class="sd">            for more details.</span>
+<span class="sd">        timeout (int): Number of seconds to wait for video intelligence</span>
+<span class="sd">            operation to finish. Defaults to 90 seconds.</span>
+<span class="sd">        request_rate (int): Number of seconds to wait between polling the</span>
+<span class="sd">            extraction operation for completion.</span>
+<span class="sd">        discovery_file (str): path to discovery file containing Google</span>
+<span class="sd">            application credentials.</span>
+<span class="sd">        api_version (str): API version to use.</span>
+<span class="sd">        max_results (int): Max number of results per page.</span>
+<span class="sd">        num_retries (int): Number of times to retry query on failure.</span>
+<span class="sd">        rate_limit (int): The minimum number of seconds required between</span>
+<span class="sd">            transform calls on this Transformer.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">api_name</span> <span class="o">=</span> <span class="s1">&#39;videointelligence&#39;</span>
+    <span class="n">_log_attributes</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;discovery_file&#39;</span><span class="p">,</span> <span class="s1">&#39;api_version&#39;</span><span class="p">,</span> <span class="s1">&#39;features&#39;</span><span class="p">,</span> <span class="s1">&#39;segments&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;config&#39;</span><span class="p">,</span> <span class="s1">&#39;timeout&#39;</span><span class="p">,</span> <span class="s1">&#39;request_rate&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;LABEL_DETECTION&#39;</span><span class="p">,</span> <span class="s1">&#39;SHOT_CHANGE_DETECTION&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;EXPLICIT_CONTENT_DETECTION&#39;</span><span class="p">],</span>
+                 <span class="n">segments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">request_rate</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                 <span class="n">discovery_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">api_version</span><span class="o">=</span><span class="s1">&#39;v1&#39;</span><span class="p">,</span> <span class="n">max_results</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                 <span class="n">num_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">rate_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segments</span> <span class="o">=</span> <span class="n">segments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_rate</span> <span class="o">=</span> <span class="n">request_rate</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GoogleVideoIntelligenceAPIExtractor</span><span class="p">,</span>
+              <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">discovery_file</span><span class="o">=</span><span class="n">discovery_file</span><span class="p">,</span>
+                             <span class="n">api_version</span><span class="o">=</span><span class="n">api_version</span><span class="p">,</span>
+                             <span class="n">max_results</span><span class="o">=</span><span class="n">max_results</span><span class="p">,</span>
+                             <span class="n">num_retries</span><span class="o">=</span><span class="n">num_retries</span><span class="p">,</span>
+                             <span class="n">rate_limit</span><span class="o">=</span><span class="n">rate_limit</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_query_api</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">request_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">videos</span><span class="p">()</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="n">request</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">request_obj</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">num_retries</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_retries</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_query_operations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="n">request_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">operations</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">request_obj</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">num_retries</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_retries</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_build_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stim</span><span class="p">):</span>
+
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">segments</span><span class="p">:</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;segments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">segments</span>
+
+        <span class="k">with</span> <span class="n">stim</span><span class="o">.</span><span class="n">get_filename</span><span class="p">()</span> <span class="k">as</span> <span class="n">filename</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+            <span class="n">LIMIT</span> <span class="o">=</span> <span class="mi">524288000</span>
+            <span class="k">if</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="n">LIMIT</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Video file is very large (</span><span class="si">{}</span><span class="s2"> bytes) and may &quot;</span>
+                              <span class="s2">&quot;exceed the Google Video Intelligence payload &quot;</span>
+                              <span class="s2">&quot;limit (</span><span class="si">{}</span><span class="s2"> bytes).&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">LIMIT</span><span class="p">))</span>
+
+        <span class="n">request</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;inputContent&#39;</span><span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">get_bytestring</span><span class="p">(),</span>
+            <span class="s1">&#39;features&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">,</span>
+            <span class="s1">&#39;videoContext&#39;</span><span class="p">:</span> <span class="n">context</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">request</span>
+
+    <span class="k">def</span> <span class="nf">_extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stim</span><span class="p">):</span>
+        <span class="n">op_request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_request</span><span class="p">(</span><span class="n">stim</span><span class="p">)</span>
+        <span class="n">operation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_api</span><span class="p">(</span><span class="n">op_request</span><span class="p">)</span>
+
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Beginning video extraction with a timeout of </span><span class="si">%f</span><span class="s2">s. Even for &quot;</span>\
+              <span class="s2">&quot;small videos, full extraction may take awhile.&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="n">operation_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_operations</span><span class="p">(</span><span class="n">operation</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
+        <span class="k">while</span> <span class="s1">&#39;done&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">response</span> <span class="ow">and</span> \
+              <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">operation_start</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_operations</span><span class="p">(</span><span class="n">operation</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request_rate</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">operation_start</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;The extraction reached the timeout limit of </span><span class="si">%f</span><span class="s2">s, which &quot;</span>\
+                  <span class="s2">&quot;means the API may not have finished analyzing the video &quot;</span>\
+                  <span class="s2">&quot;and the results may be empty or incomplete.&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ExtractorResult</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">stim</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_onset_duration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timing_json</span><span class="p">):</span>
+        <span class="n">onset</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">timing_json</span><span class="p">[</span><span class="s1">&#39;startTimeOffset&#39;</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">timing_json</span><span class="p">[</span><span class="s1">&#39;endTimeOffset&#39;</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">onset</span><span class="p">,</span> <span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">onset</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_parse_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">segment</span> <span class="ow">in</span> <span class="n">label</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;segments&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="n">onset</span><span class="p">,</span> <span class="n">duration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_onset_duration</span><span class="p">(</span><span class="n">segment</span><span class="p">[</span><span class="s1">&#39;segment&#39;</span><span class="p">])</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="n">segment</span><span class="p">[</span><span class="s1">&#39;confidence&#39;</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[(</span><span class="n">onset</span><span class="p">,</span> <span class="n">duration</span><span class="p">)]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">f</span><span class="p">:</span> <span class="n">score</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">features</span><span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">_parse_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">annotation</span><span class="p">,</span> <span class="n">score_key</span><span class="p">,</span> <span class="n">max_time</span><span class="p">):</span>
+        <span class="n">frames</span> <span class="o">=</span> <span class="n">annotation</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;frames&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
+            <span class="n">onset</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="s1">&#39;timeOffset&#39;</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="n">max_time</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;timeOffset&#39;</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">duration</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="n">onset</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="n">score_key</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[(</span><span class="n">onset</span><span class="p">,</span> <span class="n">duration</span><span class="p">)]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">f</span><span class="p">:</span> <span class="n">score</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">features</span><span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">_to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;annotationResults&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="s1">&#39;Label&#39;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">annot</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
+                        <span class="n">feats</span> <span class="o">=</span> <span class="p">[</span><span class="n">annot</span><span class="p">[</span><span class="s1">&#39;entity&#39;</span><span class="p">][</span><span class="s1">&#39;description&#39;</span><span class="p">]]</span>
+                        <span class="k">for</span> <span class="n">category</span> <span class="ow">in</span> <span class="n">annot</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;categoryEntities&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+                            <span class="n">feats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;category_&#39;</span> <span class="o">+</span> <span class="n">category</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;frameLabelAnnotations&#39;</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_parse_frame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">feats</span><span class="p">,</span> <span class="n">annot</span><span class="p">,</span> <span class="s1">&#39;confidence&#39;</span><span class="p">,</span>
+                                              <span class="n">result</span><span class="o">.</span><span class="n">stim</span><span class="o">.</span><span class="n">duration</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c1"># Good for shot or segment labels</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_parse_label</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">feats</span><span class="p">,</span> <span class="n">annot</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;shotAnnotations&#39;</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">shot</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">res</span><span class="p">):</span>
+                        <span class="n">onset</span><span class="p">,</span> <span class="n">duration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_onset_duration</span><span class="p">(</span><span class="n">shot</span><span class="p">)</span>
+                        <span class="n">data</span><span class="p">[(</span><span class="n">onset</span><span class="p">,</span> <span class="n">duration</span><span class="p">)]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+                            <span class="s1">&#39;shot_id&#39;</span><span class="p">:</span> <span class="n">i</span>
+                        <span class="p">})</span>
+                <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;explicitAnnotation&#39;</span><span class="p">:</span>
+                    <span class="n">feature</span> <span class="o">=</span> <span class="s1">&#39;pornographyLikelihood&#39;</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_parse_frame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">[</span><span class="n">feature</span><span class="p">],</span> <span class="n">res</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span>
+                                      <span class="n">result</span><span class="o">.</span><span class="n">stim</span><span class="o">.</span><span class="n">duration</span><span class="p">)</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+        <span class="c1"># If multiple confidences were parsed, uses the last one</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">onsets</span><span class="p">,</span> <span class="n">durations</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">_onsets</span> <span class="o">=</span> <span class="n">onsets</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">_durations</span> <span class="o">=</span> <span class="n">durations</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span>
+
+
+<span class="k">class</span> <span class="nc">GoogleVideoAPILabelDetectionExtractor</span><span class="p">(</span><span class="n">GoogleVideoIntelligenceAPIExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Extracts image labels using the Google Video Intelligence API &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;SHOT_MODE&#39;</span><span class="p">,</span> <span class="n">stationary_camera</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">segments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">request_rate</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">num_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                 <span class="n">discovery_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">api_version</span><span class="o">=</span><span class="s1">&#39;v1&#39;</span><span class="p">,</span> <span class="n">max_results</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                 <span class="n">rate_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frame_confidence_threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">video_confidence_threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;labelDetectionConfig&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;labelDetectionMode&#39;</span><span class="p">:</span> <span class="n">mode</span><span class="p">,</span>
+                <span class="s1">&#39;stationaryCamera&#39;</span><span class="p">:</span> <span class="n">stationary_camera</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">frame_confidence_threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;FRAME_MODE&#39;</span><span class="p">,</span> <span class="s1">&#39;SHOT_AND_FRAME_MODE&#39;</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;frame_confidence_threshold can only be specified in&quot;</span>
+                    <span class="s2">&quot;FRAME or SHOT_AND_FRAME modes.&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">config</span><span class="p">[</span><span class="s1">&#39;labelDetectionConfig&#39;</span><span class="p">][</span><span class="s1">&#39;frameConfidenceThreshold&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="n">frame_confidence_threshold</span>
+
+        <span class="k">if</span> <span class="n">video_confidence_threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SHOT_MODE&#39;</span><span class="p">,</span> <span class="s1">&#39;SHOT_AND_FRAME_MODE&#39;</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;video_confidence_threshold can only be specified in&quot;</span>
+                    <span class="s2">&quot;SHOT or SHOT_AND_FRAME modes.&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">config</span><span class="p">[</span><span class="s1">&#39;labelDetectionConfig&#39;</span><span class="p">][</span><span class="s1">&#39;videoConfidenceThreshold&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="n">video_confidence_threshold</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">GoogleVideoAPILabelDetectionExtractor</span><span class="p">,</span>
+              <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;LABEL_DETECTION&#39;</span><span class="p">],</span>
+                             <span class="n">segments</span><span class="o">=</span><span class="n">segments</span><span class="p">,</span>
+                             <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+                             <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
+                             <span class="n">request_rate</span><span class="o">=</span><span class="n">request_rate</span><span class="p">,</span>
+                             <span class="n">discovery_file</span><span class="o">=</span><span class="n">discovery_file</span><span class="p">,</span>
+                             <span class="n">api_version</span><span class="o">=</span><span class="n">api_version</span><span class="p">,</span>
+                             <span class="n">max_results</span><span class="o">=</span><span class="n">max_results</span><span class="p">,</span>
+                             <span class="n">num_retries</span><span class="o">=</span><span class="n">num_retries</span><span class="p">,</span>
+                             <span class="n">rate_limit</span><span class="o">=</span><span class="n">rate_limit</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">GoogleVideoAPIShotDetectionExtractor</span><span class="p">(</span><span class="n">GoogleVideoIntelligenceAPIExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Extracts shot changes using the Google Video Intelligence API &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">segments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">request_rate</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                 <span class="n">discovery_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">api_version</span><span class="o">=</span><span class="s1">&#39;v1&#39;</span><span class="p">,</span> <span class="n">max_results</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                 <span class="n">num_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">rate_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GoogleVideoAPIShotDetectionExtractor</span><span class="p">,</span>
+              <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;SHOT_CHANGE_DETECTION&#39;</span><span class="p">],</span>
+                             <span class="n">segments</span><span class="o">=</span><span class="n">segments</span><span class="p">,</span>
+                             <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+                             <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
+                             <span class="n">request_rate</span><span class="o">=</span><span class="n">request_rate</span><span class="p">,</span>
+                             <span class="n">discovery_file</span><span class="o">=</span><span class="n">discovery_file</span><span class="p">,</span>
+                             <span class="n">api_version</span><span class="o">=</span><span class="n">api_version</span><span class="p">,</span>
+                             <span class="n">max_results</span><span class="o">=</span><span class="n">max_results</span><span class="p">,</span>
+                             <span class="n">num_retries</span><span class="o">=</span><span class="n">num_retries</span><span class="p">,</span>
+                             <span class="n">rate_limit</span><span class="o">=</span><span class="n">rate_limit</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">GoogleVideoAPIExplicitDetectionExtractor</span><span class="p">(</span><span class="n">GoogleVideoIntelligenceAPIExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Extracts explicit content using the Google Video Intelligence API &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">segments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">request_rate</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                 <span class="n">discovery_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">api_version</span><span class="o">=</span><span class="s1">&#39;v1&#39;</span><span class="p">,</span> <span class="n">max_results</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                 <span class="n">num_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">rate_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GoogleVideoAPIExplicitDetectionExtractor</span><span class="p">,</span>
+              <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;EXPLICIT_CONTENT_DETECTION&#39;</span><span class="p">],</span>
+                             <span class="n">segments</span><span class="o">=</span><span class="n">segments</span><span class="p">,</span>
+                             <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+                             <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
+                             <span class="n">request_rate</span><span class="o">=</span><span class="n">request_rate</span><span class="p">,</span>
+                             <span class="n">discovery_file</span><span class="o">=</span><span class="n">discovery_file</span><span class="p">,</span>
+                             <span class="n">api_version</span><span class="o">=</span><span class="n">api_version</span><span class="p">,</span>
+                             <span class="n">max_results</span><span class="o">=</span><span class="n">max_results</span><span class="p">,</span>
+                             <span class="n">num_retries</span><span class="o">=</span><span class="n">num_retries</span><span class="p">,</span>
+                             <span class="n">rate_limit</span><span class="o">=</span><span class="n">rate_limit</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">GoogleLanguageAPIExtractor</span><span class="p">(</span><span class="n">GoogleAPITransformer</span><span class="p">,</span> <span class="n">TextExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Extracts natural language features from text documents using the</span>
+<span class="sd">    Google Natural Language API.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        features (list): List of features (str) to extract. Available</span>
+<span class="sd">            features: extractSyntax, extractEntities, extractDocumentSentiment,</span>
+<span class="sd">            extractEntitySentiment, and classifyText. See Google Natural</span>
+<span class="sd">            Language API documentation for more details.</span>
+<span class="sd">        language (str): The ISO-639-1 or BCP-47 identifier for the document</span>
+<span class="sd">            language. If None is provided, API auto-detects the language.</span>
+<span class="sd">        is_html (bool): When True, the document&#39;s text is expected to be</span>
+<span class="sd">            HTML. Otherwise, plain text is assumed.</span>
+<span class="sd">        discovery_file (str): path to discovery file containing Google</span>
+<span class="sd">            application credentials.</span>
+<span class="sd">        api_version (str): API version to use.</span>
+<span class="sd">        max_results (int): Max number of results per page.</span>
+<span class="sd">        num_retries (int): Number of times to retry query on failure.</span>
+<span class="sd">        rate_limit (int): The minimum number of seconds required between</span>
+<span class="sd">            transform calls on this Transformer.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">api_name</span> <span class="o">=</span> <span class="s1">&#39;language&#39;</span>
+    <span class="n">_log_attributes</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;discovery_file&#39;</span><span class="p">,</span> <span class="s1">&#39;api_version&#39;</span><span class="p">,</span> <span class="s1">&#39;features&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;language&#39;</span><span class="p">,</span> <span class="s1">&#39;is_html&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;extractSyntax&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;extractEntities&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;extractDocumentSentiment&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;extractEntitySentiment&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;classifyText&#39;</span><span class="p">],</span>
+                 <span class="n">language</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_html</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">discovery_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">api_version</span><span class="o">=</span><span class="s1">&#39;v1&#39;</span><span class="p">,</span> <span class="n">max_results</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                 <span class="n">num_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">rate_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="o">=</span> <span class="n">language</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_html</span> <span class="o">=</span> <span class="n">is_html</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GoogleLanguageAPIExtractor</span><span class="p">,</span>
+              <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">discovery_file</span><span class="o">=</span><span class="n">discovery_file</span><span class="p">,</span>
+                             <span class="n">api_version</span><span class="o">=</span><span class="n">api_version</span><span class="p">,</span>
+                             <span class="n">max_results</span><span class="o">=</span><span class="n">max_results</span><span class="p">,</span>
+                             <span class="n">num_retries</span><span class="o">=</span><span class="n">num_retries</span><span class="p">,</span>
+                             <span class="n">rate_limit</span><span class="o">=</span><span class="n">rate_limit</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_query_api</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">request_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">documents</span><span class="p">()</span><span class="o">.</span><span class="n">annotateText</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="n">request</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">request_obj</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">num_retries</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_retries</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_build_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stim</span><span class="p">):</span>
+        <span class="n">document</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;type&#39;</span> <span class="p">:</span> <span class="s1">&#39;HTML&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_html</span> <span class="k">else</span> <span class="s1">&#39;PLAIN_TEXT&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;content&#39;</span> <span class="p">:</span> <span class="n">stim</span><span class="o">.</span><span class="n">text</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="p">:</span>
+            <span class="n">document</span><span class="p">[</span><span class="s1">&#39;language&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span>
+
+        <span class="n">request</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;document&#39;</span><span class="p">:</span> <span class="n">document</span><span class="p">,</span>
+            <span class="s1">&#39;features&#39;</span><span class="p">:</span> <span class="p">{</span> <span class="n">f</span> <span class="p">:</span> <span class="kc">True</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="p">},</span>
+            <span class="s1">&#39;encodingType&#39;</span><span class="p">:</span> <span class="s1">&#39;UTF32&#39;</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">request</span>
+
+    <span class="k">def</span> <span class="nf">_extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stim</span><span class="p">):</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_request</span><span class="p">(</span><span class="n">stim</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_api</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ExtractorResult</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">stim</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_span</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text_json</span><span class="p">):</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="n">text_json</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">][</span><span class="s1">&#39;beginOffset&#39;</span><span class="p">]</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">text_json</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">][</span><span class="s1">&#39;content&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;begin_char_index&#39;</span> <span class="p">:</span> <span class="n">offset</span><span class="p">,</span>
+                 <span class="s1">&#39;end_char_index&#39;</span> <span class="p">:</span> <span class="n">offset</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">),</span>
+                 <span class="s1">&#39;text&#39;</span> <span class="p">:</span> <span class="n">content</span> <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">_data</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># One row/object for all document-level features</span>
+        <span class="n">document_data</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="s1">&#39;extractDocumentSentiment&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
+            <span class="n">sentiment</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;documentSentiment&#39;</span><span class="p">]</span>
+            <span class="n">document_data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">flatten_dict</span><span class="p">(</span><span class="n">sentiment</span><span class="p">,</span> <span class="s1">&#39;sentiment&#39;</span><span class="p">))</span>
+
+            <span class="c1"># Sentence level sentiment</span>
+            <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sentences&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+                <span class="n">sentence_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_span</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>
+                <span class="n">sentiment</span> <span class="o">=</span> <span class="n">sentence</span><span class="p">[</span><span class="s1">&#39;sentiment&#39;</span><span class="p">]</span>
+                <span class="n">sentence_data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">flatten_dict</span><span class="p">(</span><span class="n">sentiment</span><span class="p">,</span> <span class="s1">&#39;sentiment&#39;</span><span class="p">))</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sentence_data</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">category</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;categories&#39;</span><span class="p">):</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;category_</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">category</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+            <span class="n">document_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">category</span><span class="p">[</span><span class="s1">&#39;confidence&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Include only if there are document-level features</span>
+        <span class="k">if</span> <span class="n">document_data</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">document_data</span><span class="p">)</span>
+
+        <span class="c1"># Entity-level features</span>
+        <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;entities&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="n">entity_copy</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">mentions</span> <span class="o">=</span> <span class="n">entity_copy</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;mentions&#39;</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">entity_copy</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">entity_copy</span> <span class="o">=</span> <span class="n">flatten_dict</span><span class="p">(</span><span class="n">entity_copy</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mentions</span><span class="p">:</span>
+                <span class="n">entity_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_span</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+                <span class="n">entity_data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">entity_copy</span><span class="p">)</span>
+                <span class="c1"># Overwrite top-level sentiment with mention-level</span>
+                <span class="n">sentiment</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sentiment&#39;</span><span class="p">,</span> <span class="p">{})</span>
+                <span class="n">entity_data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">flatten_dict</span><span class="p">(</span><span class="n">sentiment</span><span class="p">,</span> <span class="s1">&#39;sentiment&#39;</span><span class="p">))</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entity_data</span><span class="p">)</span>
+
+        <span class="c1"># Token-level syntax features</span>
+        <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tokens&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="n">token_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_span</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+            <span class="n">token_data</span><span class="p">[</span><span class="s1">&#39;lemma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">token</span><span class="p">[</span><span class="s1">&#39;lemma&#39;</span><span class="p">]</span>
+            <span class="n">token_data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">token</span><span class="p">[</span><span class="s1">&#39;partOfSpeech&#39;</span><span class="p">])</span>
+            <span class="n">dependency</span> <span class="o">=</span> <span class="n">flatten_dict</span><span class="p">(</span><span class="n">token</span><span class="p">[</span><span class="s1">&#39;dependencyEdge&#39;</span><span class="p">],</span> <span class="s1">&#39;dependency&#39;</span><span class="p">)</span>
+            <span class="n">token_data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dependency</span><span class="p">)</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token_data</span><span class="p">)</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;language&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;language&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">df</span>
+
+
+<span class="k">class</span> <span class="nc">GoogleLanguageAPIEntityExtractor</span><span class="p">(</span><span class="n">GoogleLanguageAPIExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Extracts entity labels in text using the Google Language API &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_html</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">discovery_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">api_version</span><span class="o">=</span><span class="s1">&#39;v1&#39;</span><span class="p">,</span> <span class="n">max_results</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">num_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                 <span class="n">rate_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GoogleLanguageAPIEntityExtractor</span><span class="p">,</span>
+              <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;extractEntities&#39;</span><span class="p">],</span>
+                             <span class="n">language</span><span class="o">=</span><span class="n">language</span><span class="p">,</span>
+                             <span class="n">is_html</span><span class="o">=</span><span class="n">is_html</span><span class="p">,</span>
+                             <span class="n">discovery_file</span><span class="o">=</span><span class="n">discovery_file</span><span class="p">,</span>
+                             <span class="n">api_version</span><span class="o">=</span><span class="n">api_version</span><span class="p">,</span>
+                             <span class="n">max_results</span><span class="o">=</span><span class="n">max_results</span><span class="p">,</span>
+                             <span class="n">num_retries</span><span class="o">=</span><span class="n">num_retries</span><span class="p">,</span>
+                             <span class="n">rate_limit</span><span class="o">=</span><span class="n">rate_limit</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">GoogleLanguageAPISentimentExtractor</span><span class="p">(</span><span class="n">GoogleLanguageAPIExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Extracts sentiment of text using the Google Language API &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_html</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">discovery_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">api_version</span><span class="o">=</span><span class="s1">&#39;v1&#39;</span><span class="p">,</span> <span class="n">max_results</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">num_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                 <span class="n">rate_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GoogleLanguageAPISentimentExtractor</span><span class="p">,</span>
+              <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;extractDocumentSentiment&#39;</span><span class="p">],</span>
+                             <span class="n">language</span><span class="o">=</span><span class="n">language</span><span class="p">,</span>
+                             <span class="n">is_html</span><span class="o">=</span><span class="n">is_html</span><span class="p">,</span>
+                             <span class="n">discovery_file</span><span class="o">=</span><span class="n">discovery_file</span><span class="p">,</span>
+                             <span class="n">api_version</span><span class="o">=</span><span class="n">api_version</span><span class="p">,</span>
+                             <span class="n">max_results</span><span class="o">=</span><span class="n">max_results</span><span class="p">,</span>
+                             <span class="n">num_retries</span><span class="o">=</span><span class="n">num_retries</span><span class="p">,</span>
+                             <span class="n">rate_limit</span><span class="o">=</span><span class="n">rate_limit</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">GoogleLanguageAPISyntaxExtractor</span><span class="p">(</span><span class="n">GoogleLanguageAPIExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Extracts syntax properties of text using the Google Language API &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_html</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">discovery_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">api_version</span><span class="o">=</span><span class="s1">&#39;v1&#39;</span><span class="p">,</span> <span class="n">max_results</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">num_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                 <span class="n">rate_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GoogleLanguageAPISyntaxExtractor</span><span class="p">,</span>
+              <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;extractSyntax&#39;</span><span class="p">],</span>
+                             <span class="n">language</span><span class="o">=</span><span class="n">language</span><span class="p">,</span>
+                             <span class="n">is_html</span><span class="o">=</span><span class="n">is_html</span><span class="p">,</span>
+                             <span class="n">discovery_file</span><span class="o">=</span><span class="n">discovery_file</span><span class="p">,</span>
+                             <span class="n">api_version</span><span class="o">=</span><span class="n">api_version</span><span class="p">,</span>
+                             <span class="n">max_results</span><span class="o">=</span><span class="n">max_results</span><span class="p">,</span>
+                             <span class="n">num_retries</span><span class="o">=</span><span class="n">num_retries</span><span class="p">,</span>
+                             <span class="n">rate_limit</span><span class="o">=</span><span class="n">rate_limit</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">GoogleLanguageAPITextCategoryExtractor</span><span class="p">(</span><span class="n">GoogleLanguageAPIExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Extracts document category using the Google Language API.</span>
+<span class="sd">    See the API documentation for the taxonomy of categories:</span>
+<span class="sd">    https://cloud.google.com/natural-language/docs/categories &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_html</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">discovery_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">api_version</span><span class="o">=</span><span class="s1">&#39;v1&#39;</span><span class="p">,</span> <span class="n">max_results</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">num_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                 <span class="n">rate_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GoogleLanguageAPITextCategoryExtractor</span><span class="p">,</span>
+              <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;classifyText&#39;</span><span class="p">],</span>
+                             <span class="n">language</span><span class="o">=</span><span class="n">language</span><span class="p">,</span>
+                             <span class="n">is_html</span><span class="o">=</span><span class="n">is_html</span><span class="p">,</span>
+                             <span class="n">discovery_file</span><span class="o">=</span><span class="n">discovery_file</span><span class="p">,</span>
+                             <span class="n">api_version</span><span class="o">=</span><span class="n">api_version</span><span class="p">,</span>
+                             <span class="n">max_results</span><span class="o">=</span><span class="n">max_results</span><span class="p">,</span>
+                             <span class="n">num_retries</span><span class="o">=</span><span class="n">num_retries</span><span class="p">,</span>
+                             <span class="n">rate_limit</span><span class="o">=</span><span class="n">rate_limit</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">GoogleLanguageAPIEntitySentimentExtractor</span><span class="p">(</span><span class="n">GoogleLanguageAPIExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Extracts sentiment of entities found in text using the Google Language</span>
+<span class="sd">    API. Produces identical results to the entity extractor but with additional</span>
+<span class="sd">    sentiment analysis. &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_html</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">discovery_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">api_version</span><span class="o">=</span><span class="s1">&#39;v1&#39;</span><span class="p">,</span> <span class="n">max_results</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">num_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                 <span class="n">rate_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GoogleLanguageAPIEntitySentimentExtractor</span><span class="p">,</span>
+              <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;extractEntitySentiment&#39;</span><span class="p">],</span>
+                             <span class="n">language</span><span class="o">=</span><span class="n">language</span><span class="p">,</span>
+                             <span class="n">is_html</span><span class="o">=</span><span class="n">is_html</span><span class="p">,</span>
+                             <span class="n">discovery_file</span><span class="o">=</span><span class="n">discovery_file</span><span class="p">,</span>
+                             <span class="n">api_version</span><span class="o">=</span><span class="n">api_version</span><span class="p">,</span>
+                             <span class="n">max_results</span><span class="o">=</span><span class="n">max_results</span><span class="p">,</span>
+                             <span class="n">num_retries</span><span class="o">=</span><span class="n">num_retries</span><span class="p">,</span>
+                             <span class="n">rate_limit</span><span class="o">=</span><span class="n">rate_limit</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Developers of pliers.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'0.3.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pliers.converters.IBMSpeechAPIConverter &mdash; pliers 0.2 documentation</title>
+  <title>pliers.converters.IBMSpeechAPIConverter &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="../index.html"/> 
+    <link rel="top" title="pliers 0.3.0 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -166,8 +166,8 @@
 <h1>pliers.converters.IBMSpeechAPIConverter<a class="headerlink" href="#pliers-converters-ibmspeechapiconverter" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="pliers.converters.IBMSpeechAPIConverter">
-<em class="property">class </em><code class="descclassname">pliers.converters.</code><code class="descname">IBMSpeechAPIConverter</code><span class="sig-paren">(</span><em>username=None</em>, <em>password=None</em>, <em>resolution='words'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/converters/api.html#IBMSpeechAPIConverter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.converters.IBMSpeechAPIConverter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">pliers.converters.audio.AudioToTextConverter</span></code>, <code class="xref py py-class docutils literal"><span class="pre">pliers.utils.base.EnvironmentKeyMixin</span></code></p>
+<em class="property">class </em><code class="descclassname">pliers.converters.</code><code class="descname">IBMSpeechAPIConverter</code><span class="sig-paren">(</span><em>username=None</em>, <em>password=None</em>, <em>resolution='words'</em>, <em>rate_limit=None</em>, <em>model='en-US'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/converters/api/ibm.html#IBMSpeechAPIConverter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.converters.IBMSpeechAPIConverter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">pliers.transformers.api.base.APITransformer</span></code>, <code class="xref py py-class docutils literal"><span class="pre">pliers.converters.audio.AudioToTextConverter</span></code></p>
 <p>Uses the IBM Watson Text to Speech API to run speech-to-text
 transcription on an audio file.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -175,16 +175,20 @@ transcription on an audio file.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>username</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – API credential username. Must be passed explicitly
+<li><strong>username</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – API credential username. Must be passed explicitly
 or stored in the environment variable specified in the _env_keys
 field.</li>
-<li><strong>password</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – API credential password. Must be passed explicitly
+<li><strong>password</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – API credential password. Must be passed explicitly
 or stored in the environment variable specified in the _env_keys
 field.</li>
-<li><strong>resolution</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – what resolution the resultant ComplexTextStim should
+<li><strong>resolution</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – what resolution the resultant ComplexTextStim should
 be separated by (i.e. the unit each TextStim in the ComplexTextStim
 elements should be). Currently, only ‘words’ or ‘phrases’ are
 supported.</li>
+<li><strong>rate_limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The minimum number of seconds required between
+transform calls on this Transformer.</li>
+<li><strong>model</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The model to use for speech recognition (e.g., ‘en-US’,
+‘zh-CN’, etc.). Don’t include the “_BroadbandModel” suffix.</li>
 </ul>
 </td>
 </tr>
@@ -192,7 +196,7 @@ supported.</li>
 </table>
 <dl class="method">
 <dt id="pliers.converters.IBMSpeechAPIConverter.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>username=None</em>, <em>password=None</em>, <em>resolution='words'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/converters/api.html#IBMSpeechAPIConverter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.converters.IBMSpeechAPIConverter.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>username=None</em>, <em>password=None</em>, <em>resolution='words'</em>, <em>rate_limit=None</em>, <em>model='en-US'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/converters/api/ibm.html#IBMSpeechAPIConverter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.converters.IBMSpeechAPIConverter.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -204,7 +208,7 @@ supported.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>stims</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>, </em><em>Stim</em><em>, </em><em>list</em>) – <p>One or more stimuli to process. Must be
+<li><strong>stims</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>Stim</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – <p>One or more stimuli to process. Must be
 one of:</p>
 <blockquote>
 <div><ul>
@@ -216,7 +220,7 @@ string or a Stim.</li>
 </ul>
 </div></blockquote>
 </li>
-<li><strong>validation</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – <p>String specifying how validation errors should
+<li><strong>validation</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – <p>String specifying how validation errors should
 be handled. Must be one of:</p>
 <blockquote>
 <div><ul>
@@ -276,7 +280,7 @@ _transform call.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

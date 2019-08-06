@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pliers.stimuli.TweetStimFactory &mdash; pliers 0.2 documentation</title>
+  <title>pliers.stimuli.TweetStimFactory &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="../index.html"/> 
+    <link rel="top" title="pliers 0.3.0 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -166,8 +166,8 @@
 <h1>pliers.stimuli.TweetStimFactory<a class="headerlink" href="#pliers-stimuli-tweetstimfactory" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="pliers.stimuli.TweetStimFactory">
-<em class="property">class </em><code class="descclassname">pliers.stimuli.</code><code class="descname">TweetStimFactory</code><span class="sig-paren">(</span><em>consumer_key=None</em>, <em>consumer_secret=None</em>, <em>access_token_key=None</em>, <em>access_token_secret=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/stimuli/api.html#TweetStimFactory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.stimuli.TweetStimFactory" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">pliers.utils.base.EnvironmentKeyMixin</span></code></p>
+<em class="property">class </em><code class="descclassname">pliers.stimuli.</code><code class="descname">TweetStimFactory</code><span class="sig-paren">(</span><em>consumer_key=None</em>, <em>consumer_secret=None</em>, <em>access_token_key=None</em>, <em>access_token_secret=None</em>, <em>rate_limit=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/stimuli/api.html#TweetStimFactory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.stimuli.TweetStimFactory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">pliers.utils.base.APIDependent</span></code></p>
 <p>An object from which to generate TweetStims, creates an Api instance from
 the python-twitter library</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -175,10 +175,10 @@ the python-twitter library</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>consumer_key</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – A valid consumer key for the Twitter API</li>
-<li><strong>consumer_secret</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – A valid consumer secret key for the Twitter API</li>
-<li><strong>access_token_key</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – A valid access token for the Twitter API</li>
-<li><strong>access_token_secret</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – A valid access token secret for the
+<li><strong>consumer_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – A valid consumer key for the Twitter API</li>
+<li><strong>consumer_secret</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – A valid consumer secret key for the Twitter API</li>
+<li><strong>access_token_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – A valid access token for the Twitter API</li>
+<li><strong>access_token_secret</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – A valid access token secret for the
 Twitter API</li>
 </ul>
 </td>
@@ -188,7 +188,7 @@ Twitter API</li>
 <p>To get these credentials, visit <a class="reference external" href="https://dev.twitter.com/">https://dev.twitter.com/</a>.</p>
 <dl class="method">
 <dt id="pliers.stimuli.TweetStimFactory.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>consumer_key=None</em>, <em>consumer_secret=None</em>, <em>access_token_key=None</em>, <em>access_token_secret=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/stimuli/api.html#TweetStimFactory.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.stimuli.TweetStimFactory.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>consumer_key=None</em>, <em>consumer_secret=None</em>, <em>access_token_key=None</em>, <em>access_token_secret=None</em>, <em>rate_limit=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/stimuli/api.html#TweetStimFactory.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.stimuli.TweetStimFactory.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -230,7 +230,7 @@ Twitter API</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

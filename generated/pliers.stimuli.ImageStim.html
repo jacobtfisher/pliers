@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pliers.stimuli.ImageStim &mdash; pliers 0.2 documentation</title>
+  <title>pliers.stimuli.ImageStim &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="../index.html"/> 
+    <link rel="top" title="pliers 0.3.0 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -174,14 +174,14 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Path to input file, if one exists.</li>
-<li><strong>onset</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Optional onset of the image (in seconds) with
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Path to input file, if one exists.</li>
+<li><strong>onset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Optional onset of the image (in seconds) with
 respect to some more general context or timeline the user wishes
 to keep track of.</li>
-<li><strong>duration</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Optional duration of the ImageStim, in seconds.</li>
+<li><strong>duration</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Optional duration of the ImageStim, in seconds.</li>
 <li><strong>data</strong> (<em>ndarray</em>) – Optional numpy array to initialize the image from,
 if no filename is passed.</li>
-<li><strong>url</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Optional url to read contents from.</li>
+<li><strong>url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Optional url to read contents from.</li>
 </ul>
 </td>
 </tr>
@@ -191,6 +191,21 @@ if no filename is passed.</li>
 <dt id="pliers.stimuli.ImageStim.__init__">
 <code class="descname">__init__</code><span class="sig-paren">(</span><em>filename=None</em>, <em>onset=None</em>, <em>duration=None</em>, <em>data=None</em>, <em>url=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/stimuli/image.html#ImageStim.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.stimuli.ImageStim.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="pliers.stimuli.ImageStim.get_bytestring">
+<code class="descname">get_bytestring</code><span class="sig-paren">(</span><em>encoding='utf-8'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/stimuli/image.html#ImageStim.get_bytestring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.stimuli.ImageStim.get_bytestring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the image data as a bytestring.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>encoding</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Encoding to use. Defaults to utf-8.</td>
+</tr>
+</tbody>
+</table>
+<p>Returns: A string.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="pliers.stimuli.ImageStim.get_filename">
@@ -243,7 +258,7 @@ if no filename is passed.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

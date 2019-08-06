@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pliers.stimuli.api &mdash; pliers 0.2 documentation</title>
+  <title>pliers.stimuli.api &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="../../../index.html"/>
+    <link rel="top" title="pliers 0.3.0 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -166,6 +166,7 @@
   <h1>Source code for pliers.stimuli.api</h1><div class="highlight"><pre>
 <span></span><span class="sd">&#39;&#39;&#39; Stimuli that are inherently associated with remote resources. &#39;&#39;&#39;</span>
 
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">load_stims</span>
@@ -173,13 +174,13 @@
 <span class="kn">from</span> <span class="nn">.image</span> <span class="k">import</span> <span class="n">ImageStim</span>
 <span class="kn">from</span> <span class="nn">.text</span> <span class="k">import</span> <span class="n">TextStim</span>
 <span class="kn">from</span> <span class="nn">.video</span> <span class="k">import</span> <span class="n">VideoStim</span>
-<span class="kn">from</span> <span class="nn">pliers.utils</span> <span class="k">import</span> <span class="p">(</span><span class="n">EnvironmentKeyMixin</span><span class="p">,</span> <span class="n">attempt_to_import</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">pliers.utils</span> <span class="k">import</span> <span class="p">(</span><span class="n">APIDependent</span><span class="p">,</span> <span class="n">attempt_to_import</span><span class="p">,</span>
                           <span class="n">verify_dependencies</span><span class="p">)</span>
 
 <span class="n">twitter</span> <span class="o">=</span> <span class="n">attempt_to_import</span><span class="p">(</span><span class="s1">&#39;twitter&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="TweetStimFactory"><a class="viewcode-back" href="../../../generated/pliers.stimuli.TweetStimFactory.html#pliers.stimuli.TweetStimFactory">[docs]</a><span class="k">class</span> <span class="nc">TweetStimFactory</span><span class="p">(</span><span class="n">EnvironmentKeyMixin</span><span class="p">):</span>
+<div class="viewcode-block" id="TweetStimFactory"><a class="viewcode-back" href="../../../generated/pliers.stimuli.TweetStimFactory.html#pliers.stimuli.TweetStimFactory">[docs]</a><span class="k">class</span> <span class="nc">TweetStimFactory</span><span class="p">(</span><span class="n">APIDependent</span><span class="p">):</span>
 
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    An object from which to generate TweetStims, creates an Api instance from</span>
@@ -199,7 +200,8 @@
                  <span class="s1">&#39;TWITTER_ACCESS_TOKEN_KEY&#39;</span><span class="p">,</span> <span class="s1">&#39;TWITTER_ACCESS_TOKEN_SECRET&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TweetStimFactory.__init__"><a class="viewcode-back" href="../../../generated/pliers.stimuli.TweetStimFactory.html#pliers.stimuli.TweetStimFactory.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">consumer_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">consumer_secret</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">access_token_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">access_token_secret</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">access_token_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">access_token_secret</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">rate_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">verify_dependencies</span><span class="p">([</span><span class="s1">&#39;twitter&#39;</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">consumer_key</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">consumer_secret</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> \
            <span class="n">access_token_key</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">access_token_secret</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -217,11 +219,34 @@
                                <span class="n">consumer_secret</span><span class="o">=</span><span class="n">consumer_secret</span><span class="p">,</span>
                                <span class="n">access_token_key</span><span class="o">=</span><span class="n">access_token_key</span><span class="p">,</span>
                                <span class="n">access_token_secret</span><span class="o">=</span><span class="n">access_token_secret</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">VerifyCredentials</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">consumer_key</span> <span class="o">=</span> <span class="n">consumer_key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">consumer_secret</span> <span class="o">=</span> <span class="n">consumer_secret</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">access_token_key</span> <span class="o">=</span> <span class="n">access_token_key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">access_token_secret</span> <span class="o">=</span> <span class="n">access_token_secret</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TweetStimFactory</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">rate_limit</span><span class="o">=</span><span class="n">rate_limit</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">api_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">consumer_key</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">consumer_secret</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">access_token_key</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">access_token_secret</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">check_valid_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">verify_dependencies</span><span class="p">([</span><span class="s1">&#39;twitter&#39;</span><span class="p">])</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">VerifyCredentials</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="n">twitter</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">TwitterError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">get_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status_id</span><span class="p">):</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">GetStatus</span><span class="p">(</span><span class="n">status_id</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">TweetStim</span><span class="p">(</span><span class="n">status</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_keys</span><span class="p">():</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">GetStatus</span><span class="p">(</span><span class="n">status_id</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">TweetStim</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">twitter</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">TwitterError</span><span class="p">(</span><span class="s1">&#39;Invalid or expired token.&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="TweetStim"><a class="viewcode-back" href="../../../generated/pliers.stimuli.TweetStim.html#pliers.stimuli.TweetStim">[docs]</a><span class="k">class</span> <span class="nc">TweetStim</span><span class="p">(</span><span class="n">CompoundStim</span><span class="p">):</span>
@@ -282,7 +307,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

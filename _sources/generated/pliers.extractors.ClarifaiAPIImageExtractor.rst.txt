@@ -1,0 +1,11 @@
+pliers.extractors.ClarifaiAPIImageExtractor
+===========================================
+
+.. currentmodule:: pliers.extractors
+
+.. autoclass:: ClarifaiAPIImageExtractor
+	:members:
+	:inherited-members:
+	:show-inheritance:
+
+	.. automethod:: __init__

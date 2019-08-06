@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Quickstart &mdash; pliers 0.2 documentation</title>
+  <title>Quickstart &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="index.html"/>
+    <link rel="top" title="pliers 0.3.0 documentation" href="index.html"/>
         <link rel="next" title="Basic concepts" href="basic-concepts.html"/>
         <link rel="prev" title="Installing pliers" href="installation.html"/> 
 
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -174,6 +174,8 @@
 <p>This first example uses the face_recognition package’s location extraction method to detect the location of Barack Obama’s face within a single image. The tools used to do this are completely local (i.e., the image isn’t sent to an external API).</p>
 <p>We output the result as a pandas DataFrame; the ‘face_locations’ column contains the coordinates of the bounding box in CSS format (i.e., top, right, bottom, and left edges).</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pliers.extractors</span> <span class="k">import</span> <span class="n">FaceRecognitionFaceLocationsExtractor</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">join</span>
+<span class="kn">from</span> <span class="nn">pliers.tests.utils</span> <span class="k">import</span> <span class="n">get_test_data_path</span>
 
 <span class="c1"># A picture of Barack Obama</span>
 <span class="n">image</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">get_test_data_path</span><span class="p">(),</span> <span class="s1">&#39;image&#39;</span><span class="p">,</span> <span class="s1">&#39;obama.jpg&#39;</span><span class="p">)</span>
@@ -1431,14 +1433,14 @@ example illustrates how easily this can be accomplished in pliers. It
 also demonstrates the concept of <em>chaining</em> multiple Transformer
 objects. We first convert a video to a series of images, and then apply
 an object-detection <code class="docutils literal"><span class="pre">Extractor</span></code> to each image.</p>
-<p>Note, as with other examples above, that the <code class="docutils literal"><span class="pre">ClarifaiAPIExtractor</span></code>
+<p>Note, as with other examples above, that the <code class="docutils literal"><span class="pre">ClarifaiAPIImageExtractor</span></code>
 wraps the Clarifai object recognition API, so you’ll need to have an API
 key set up appropriately (if you don’t have an API key, and don’t want
-to set one up, you can replace <code class="docutils literal"><span class="pre">ClarifaiAPIExtractor</span></code> with
+to set one up, you can replace <code class="docutils literal"><span class="pre">ClarifaiAPIImageExtractor</span></code> with
 <code class="docutils literal"><span class="pre">TensorFlowInceptionV3Extractor</span></code> to get similar, though not quite as
 accurate, results).</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pliers.filters</span> <span class="k">import</span> <span class="n">FrameSamplingFilter</span>
-<span class="kn">from</span> <span class="nn">pliers.extractors</span> <span class="k">import</span> <span class="n">ClarifaiAPIExtractor</span><span class="p">,</span> <span class="n">merge_results</span>
+<span class="kn">from</span> <span class="nn">pliers.extractors</span> <span class="k">import</span> <span class="n">ClarifaiAPIImageExtractor</span><span class="p">,</span> <span class="n">merge_results</span>
 
 <span class="n">video</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">get_test_data_path</span><span class="p">(),</span> <span class="s1">&#39;video&#39;</span><span class="p">,</span> <span class="s1">&#39;small.mp4&#39;</span><span class="p">)</span>
 
@@ -1446,7 +1448,7 @@ accurate, results).</p>
 <span class="n">sampler</span> <span class="o">=</span> <span class="n">FrameSamplingFilter</span><span class="p">(</span><span class="n">hertz</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">frames</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">video</span><span class="p">)</span>
 
-<span class="n">ext</span> <span class="o">=</span> <span class="n">ClarifaiAPIExtractor</span><span class="p">()</span>
+<span class="n">ext</span> <span class="o">=</span> <span class="n">ClarifaiAPIImageExtractor</span><span class="p">()</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">ext</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">merge_results</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="p">)</span>
 <span class="n">df</span>
@@ -1479,18 +1481,18 @@ accurate, results).</p>
       <th>duration</th>
       <th>order</th>
       <th>object_id</th>
-      <th>ClarifaiAPIExtractor#Lego</th>
+      <th>ClarifaiAPIImageExtractor#Lego</th>
       <th>...</th>
-      <th>ClarifaiAPIExtractor#power</th>
-      <th>ClarifaiAPIExtractor#precision</th>
-      <th>ClarifaiAPIExtractor#production</th>
-      <th>ClarifaiAPIExtractor#research</th>
-      <th>ClarifaiAPIExtractor#robot</th>
-      <th>ClarifaiAPIExtractor#science</th>
-      <th>ClarifaiAPIExtractor#still life</th>
-      <th>ClarifaiAPIExtractor#studio</th>
-      <th>ClarifaiAPIExtractor#technology</th>
-      <th>ClarifaiAPIExtractor#toy</th>
+      <th>ClarifaiAPIImageExtractor#power</th>
+      <th>ClarifaiAPIImageExtractor#precision</th>
+      <th>ClarifaiAPIImageExtractor#production</th>
+      <th>ClarifaiAPIImageExtractor#research</th>
+      <th>ClarifaiAPIImageExtractor#robot</th>
+      <th>ClarifaiAPIImageExtractor#science</th>
+      <th>ClarifaiAPIImageExtractor#still life</th>
+      <th>ClarifaiAPIImageExtractor#studio</th>
+      <th>ClarifaiAPIImageExtractor#technology</th>
+      <th>ClarifaiAPIImageExtractor#toy</th>
     </tr>
   </thead>
   <tbody>
@@ -1815,7 +1817,7 @@ examples above.</p>
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">join</span>
 <span class="kn">from</span> <span class="nn">pliers.filters</span> <span class="k">import</span> <span class="n">FrameSamplingFilter</span>
 <span class="kn">from</span> <span class="nn">pliers.converters</span> <span class="k">import</span> <span class="n">GoogleSpeechAPIConverter</span>
-<span class="kn">from</span> <span class="nn">pliers.extractors</span> <span class="k">import</span> <span class="p">(</span><span class="n">ClarifaiAPIExtractor</span><span class="p">,</span> <span class="n">GoogleVisionAPIFaceExtractor</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">pliers.extractors</span> <span class="k">import</span> <span class="p">(</span><span class="n">ClarifaiAPIImageExtractor</span><span class="p">,</span> <span class="n">GoogleVisionAPIFaceExtractor</span><span class="p">,</span>
                                <span class="n">ComplexTextExtractor</span><span class="p">,</span> <span class="n">PredefinedDictionaryExtractor</span><span class="p">,</span>
                                <span class="n">STFTAudioExtractor</span><span class="p">,</span> <span class="n">VADERSentimentExtractor</span><span class="p">,</span>
                                <span class="n">merge_results</span><span class="p">)</span>
@@ -1830,7 +1832,7 @@ examples above.</p>
 <span class="n">sampler</span> <span class="o">=</span> <span class="n">FrameSamplingFilter</span><span class="p">(</span><span class="n">every</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">frames</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">video</span><span class="p">)</span>
 
-<span class="n">obj_ext</span> <span class="o">=</span> <span class="n">ClarifaiAPIExtractor</span><span class="p">()</span>
+<span class="n">obj_ext</span> <span class="o">=</span> <span class="n">ClarifaiAPIImageExtractor</span><span class="p">()</span>
 <span class="n">obj_features</span> <span class="o">=</span> <span class="n">obj_ext</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
 <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_features</span><span class="p">)</span>
 
@@ -1913,7 +1915,7 @@ examples above.</p>
       <td>0.833333</td>
       <td>administration</td>
       <td>0.970786</td>
-      <td>ClarifaiAPIExtractor</td>
+      <td>ClarifaiAPIImageExtractor</td>
       <td>frame[0]</td>
       <td>VideoFrameStim</td>
       <td>None</td>
@@ -1928,7 +1930,7 @@ examples above.</p>
       <td>0.833333</td>
       <td>administration</td>
       <td>0.976996</td>
-      <td>ClarifaiAPIExtractor</td>
+      <td>ClarifaiAPIImageExtractor</td>
       <td>frame[10]</td>
       <td>VideoFrameStim</td>
       <td>None</td>
@@ -1943,7 +1945,7 @@ examples above.</p>
       <td>0.833333</td>
       <td>administration</td>
       <td>0.972223</td>
-      <td>ClarifaiAPIExtractor</td>
+      <td>ClarifaiAPIImageExtractor</td>
       <td>frame[20]</td>
       <td>VideoFrameStim</td>
       <td>None</td>
@@ -1958,7 +1960,7 @@ examples above.</p>
       <td>0.833333</td>
       <td>administration</td>
       <td>0.98288</td>
-      <td>ClarifaiAPIExtractor</td>
+      <td>ClarifaiAPIImageExtractor</td>
       <td>frame[30]</td>
       <td>VideoFrameStim</td>
       <td>None</td>
@@ -1973,7 +1975,7 @@ examples above.</p>
       <td>0.833333</td>
       <td>administration</td>
       <td>0.94764</td>
-      <td>ClarifaiAPIExtractor</td>
+      <td>ClarifaiAPIImageExtractor</td>
       <td>frame[40]</td>
       <td>VideoFrameStim</td>
       <td>None</td>
@@ -1988,7 +1990,7 @@ examples above.</p>
       <td>0.833333</td>
       <td>administration</td>
       <td>0.952409</td>
-      <td>ClarifaiAPIExtractor</td>
+      <td>ClarifaiAPIImageExtractor</td>
       <td>frame[50]</td>
       <td>VideoFrameStim</td>
       <td>None</td>
@@ -2003,7 +2005,7 @@ examples above.</p>
       <td>0.833333</td>
       <td>administration</td>
       <td>0.951445</td>
-      <td>ClarifaiAPIExtractor</td>
+      <td>ClarifaiAPIImageExtractor</td>
       <td>frame[60]</td>
       <td>VideoFrameStim</td>
       <td>None</td>
@@ -2018,7 +2020,7 @@ examples above.</p>
       <td>0.833333</td>
       <td>administration</td>
       <td>0.954552</td>
-      <td>ClarifaiAPIExtractor</td>
+      <td>ClarifaiAPIImageExtractor</td>
       <td>frame[70]</td>
       <td>VideoFrameStim</td>
       <td>None</td>
@@ -2033,7 +2035,7 @@ examples above.</p>
       <td>0.833333</td>
       <td>administration</td>
       <td>0.953084</td>
-      <td>ClarifaiAPIExtractor</td>
+      <td>ClarifaiAPIImageExtractor</td>
       <td>frame[80]</td>
       <td>VideoFrameStim</td>
       <td>None</td>
@@ -2048,7 +2050,7 @@ examples above.</p>
       <td>0.833333</td>
       <td>administration</td>
       <td>0.947371</td>
-      <td>ClarifaiAPIExtractor</td>
+      <td>ClarifaiAPIImageExtractor</td>
       <td>frame[90]</td>
       <td>VideoFrameStim</td>
       <td>None</td>
@@ -2090,7 +2092,7 @@ image, audio or text inputs, using state-of-the-art tools and services!</p>
 <span class="c1"># Define nodes</span>
 <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span>
     <span class="p">(</span><span class="n">FrameSamplingFilter</span><span class="p">(</span><span class="n">every</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
-         <span class="p">[</span><span class="s1">&#39;ClarifaiAPIExtractor&#39;</span><span class="p">,</span> <span class="s1">&#39;GoogleVisionAPIFaceExtractor&#39;</span><span class="p">]),</span>
+         <span class="p">[</span><span class="s1">&#39;ClarifaiAPIImageExtractor&#39;</span><span class="p">,</span> <span class="s1">&#39;GoogleVisionAPIFaceExtractor&#39;</span><span class="p">]),</span>
     <span class="p">(</span><span class="n">STFTAudioExtractor</span><span class="p">(</span><span class="n">freq_bins</span><span class="o">=</span><span class="p">[(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">300</span><span class="p">)])),</span>
     <span class="p">(</span><span class="s1">&#39;GoogleSpeechAPIConverter&#39;</span><span class="p">,</span>
          <span class="p">[</span><span class="s1">&#39;ComplexTextExtractor&#39;</span><span class="p">,</span>
@@ -2150,7 +2152,7 @@ image, audio or text inputs, using state-of-the-art tools and services!</p>
       <td>0.833333</td>
       <td>administration</td>
       <td>0.970786</td>
-      <td>ClarifaiAPIExtractor</td>
+      <td>ClarifaiAPIImageExtractor</td>
       <td>frame[0]</td>
       <td>VideoFrameStim</td>
       <td>None</td>
@@ -2165,7 +2167,7 @@ image, audio or text inputs, using state-of-the-art tools and services!</p>
       <td>0.833333</td>
       <td>administration</td>
       <td>0.976996</td>
-      <td>ClarifaiAPIExtractor</td>
+      <td>ClarifaiAPIImageExtractor</td>
       <td>frame[10]</td>
       <td>VideoFrameStim</td>
       <td>None</td>
@@ -2180,7 +2182,7 @@ image, audio or text inputs, using state-of-the-art tools and services!</p>
       <td>0.833333</td>
       <td>administration</td>
       <td>0.972223</td>
-      <td>ClarifaiAPIExtractor</td>
+      <td>ClarifaiAPIImageExtractor</td>
       <td>frame[20]</td>
       <td>VideoFrameStim</td>
       <td>None</td>
@@ -2195,7 +2197,7 @@ image, audio or text inputs, using state-of-the-art tools and services!</p>
       <td>0.833333</td>
       <td>administration</td>
       <td>0.98288</td>
-      <td>ClarifaiAPIExtractor</td>
+      <td>ClarifaiAPIImageExtractor</td>
       <td>frame[30]</td>
       <td>VideoFrameStim</td>
       <td>None</td>
@@ -2210,7 +2212,7 @@ image, audio or text inputs, using state-of-the-art tools and services!</p>
       <td>0.833333</td>
       <td>administration</td>
       <td>0.94764</td>
-      <td>ClarifaiAPIExtractor</td>
+      <td>ClarifaiAPIImageExtractor</td>
       <td>frame[40]</td>
       <td>VideoFrameStim</td>
       <td>None</td>
@@ -2225,7 +2227,7 @@ image, audio or text inputs, using state-of-the-art tools and services!</p>
       <td>0.833333</td>
       <td>administration</td>
       <td>0.952409</td>
-      <td>ClarifaiAPIExtractor</td>
+      <td>ClarifaiAPIImageExtractor</td>
       <td>frame[50]</td>
       <td>VideoFrameStim</td>
       <td>None</td>
@@ -2240,7 +2242,7 @@ image, audio or text inputs, using state-of-the-art tools and services!</p>
       <td>0.833333</td>
       <td>administration</td>
       <td>0.951445</td>
-      <td>ClarifaiAPIExtractor</td>
+      <td>ClarifaiAPIImageExtractor</td>
       <td>frame[60]</td>
       <td>VideoFrameStim</td>
       <td>None</td>
@@ -2255,7 +2257,7 @@ image, audio or text inputs, using state-of-the-art tools and services!</p>
       <td>0.833333</td>
       <td>administration</td>
       <td>0.954552</td>
-      <td>ClarifaiAPIExtractor</td>
+      <td>ClarifaiAPIImageExtractor</td>
       <td>frame[70]</td>
       <td>VideoFrameStim</td>
       <td>None</td>
@@ -2270,7 +2272,7 @@ image, audio or text inputs, using state-of-the-art tools and services!</p>
       <td>0.833333</td>
       <td>administration</td>
       <td>0.953084</td>
-      <td>ClarifaiAPIExtractor</td>
+      <td>ClarifaiAPIImageExtractor</td>
       <td>frame[80]</td>
       <td>VideoFrameStim</td>
       <td>None</td>
@@ -2285,7 +2287,7 @@ image, audio or text inputs, using state-of-the-art tools and services!</p>
       <td>0.833333</td>
       <td>administration</td>
       <td>0.947371</td>
-      <td>ClarifaiAPIExtractor</td>
+      <td>ClarifaiAPIImageExtractor</td>
       <td>frame[90]</td>
       <td>VideoFrameStim</td>
       <td>None</td>
@@ -2341,7 +2343,7 @@ image, audio or text inputs, using state-of-the-art tools and services!</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

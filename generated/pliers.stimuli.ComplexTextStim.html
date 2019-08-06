@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pliers.stimuli.ComplexTextStim &mdash; pliers 0.2 documentation</title>
+  <title>pliers.stimuli.ComplexTextStim &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="../index.html"/> 
+    <link rel="top" title="pliers 0.3.0 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -175,7 +175,7 @@ onsets and/or durations associated with each element.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – The filename to read from. Must be tab-delimited text.
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The filename to read from. Must be tab-delimited text.
 Files must always contain a column containing the text of each
 stimulus in the collection. Optionally, additional columns can be
 included that contain duration and onset information. If a header
@@ -183,11 +183,11 @@ row is present in the file, valid columns must be labeled as
 ‘text’, ‘onset’, and ‘duration’ where available (though only text
 is mandatory). If no header is present in the file, the columns
 argument will be used to infer the indices of the key columns.</li>
-<li><strong>onset</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Optional onset of the ComplexTextStim relative to some
+<li><strong>onset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Optional onset of the ComplexTextStim relative to some
 more general context.</li>
-<li><strong>duration</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Optional duration of the ComplexTextStim withing some
+<li><strong>duration</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Optional duration of the ComplexTextStim withing some
 more general context.</li>
-<li><strong>columns</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Optional specification of column order. An abbreviated
+<li><strong>columns</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Optional specification of column order. An abbreviated
 string denoting the column position of text, onset, and duration
 in the file. Use t for text, o for onset, d for duration. For
 example, passing ‘ot’ indicates that the first column contains
@@ -195,16 +195,16 @@ the onsets and the second contains the text. E.g., passing ‘tod’
 indicates that the first three columns contain text, onset, and
 duration information, respectively. Note that if the input file
 contains a header row, the columns argument will be ignored.</li>
-<li><strong>default_duration</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – the duration to assign to any text elements
+<li><strong>default_duration</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – the duration to assign to any text elements
 in the collection that do not have an explicit value provided
 in the input file.</li>
-<li><strong>elements</strong> (<em>list</em>) – An optional list of TextStims that comprise the
+<li><strong>elements</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – An optional list of TextStims that comprise the
 ComplexTextStim. If both the filename and elements arguments are
 passed, the TextStims in elements will be appended to the ones
 extracted from the file.</li>
-<li><strong>text</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Optional multi-token string to convert to a
+<li><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Optional multi-token string to convert to a
 ComplexTextStim.</li>
-<li><strong>unit</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – The unit of segmentation. Either ‘word’ or ‘sentence’.
+<li><strong>unit</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The unit of segmentation. Either ‘word’ or ‘sentence’.
 Ignored if text is None.</li>
 <li><strong>tokenizer</strong> – Optional tokenizer to use if initializing from text. If
 passed, will override the default nltk tokenizers. If a string is
@@ -212,7 +212,7 @@ passed, it is interpreted as a capturing regex and passed to
 re.findall(). Otherwise, must be an object that implements a
 tokenize() method and returns a list of tokens. Ignored if text is
 None.</li>
-<li><strong>language</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – The language to use; passed to nltk. Only used if
+<li><strong>language</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The language to use; passed to nltk. Only used if
 tokenizer is None. Defaults to English. Ignored if text is None.</li>
 </ul>
 </td>
@@ -275,7 +275,7 @@ tokenizer is None. Defaults to English. Ignored if text is None.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

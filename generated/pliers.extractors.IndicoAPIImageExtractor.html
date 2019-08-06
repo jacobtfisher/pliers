@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pliers.extractors.IndicoAPIImageExtractor &mdash; pliers 0.2 documentation</title>
+  <title>pliers.extractors.IndicoAPIImageExtractor &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="../index.html"/> 
+    <link rel="top" title="pliers 0.3.0 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -166,13 +166,29 @@
 <h1>pliers.extractors.IndicoAPIImageExtractor<a class="headerlink" href="#pliers-extractors-indicoapiimageextractor" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="pliers.extractors.IndicoAPIImageExtractor">
-<em class="property">class </em><code class="descclassname">pliers.extractors.</code><code class="descname">IndicoAPIImageExtractor</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/extractors/api.html#IndicoAPIImageExtractor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.extractors.IndicoAPIImageExtractor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">pliers.extractors.image.ImageExtractor</span></code>, <code class="xref py py-class docutils literal"><span class="pre">pliers.extractors.api.IndicoAPIExtractor</span></code></p>
+<em class="property">class </em><code class="descclassname">pliers.extractors.</code><code class="descname">IndicoAPIImageExtractor</code><span class="sig-paren">(</span><em>api_key=None</em>, <em>models=None</em>, <em>rate_limit=None</em>, <em>batch_size=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/extractors/api/indico.html#IndicoAPIImageExtractor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.extractors.IndicoAPIImageExtractor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">pliers.extractors.image.ImageExtractor</span></code>, <code class="xref py py-class docutils literal"><span class="pre">pliers.extractors.api.indico.IndicoAPIExtractor</span></code></p>
 <p>Uses to Indico API to extract features from Images, such as
 facial emotion recognition or content filtering.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>api_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – A valid API key for the Indico API. Only needs to be
+passed the first time the extractor is initialized.</li>
+<li><strong>models</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – The names of the Indico models to use.</li>
+<li><strong>rate_limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The minimum number of seconds required between
+transform calls on this Transformer.</li>
+<li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of stims to send per batched API request.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="pliers.extractors.IndicoAPIImageExtractor.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/extractors/api.html#IndicoAPIImageExtractor.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.extractors.IndicoAPIImageExtractor.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>api_key=None</em>, <em>models=None</em>, <em>rate_limit=None</em>, <em>batch_size=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/extractors/api/indico.html#IndicoAPIImageExtractor.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.extractors.IndicoAPIImageExtractor.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -214,7 +230,7 @@ facial emotion recognition or content filtering.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

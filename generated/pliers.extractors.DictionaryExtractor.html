@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pliers.extractors.DictionaryExtractor &mdash; pliers 0.2 documentation</title>
+  <title>pliers.extractors.DictionaryExtractor &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="../index.html"/> 
+    <link rel="top" title="pliers 0.3.0 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -175,12 +175,12 @@ arbitrary features contained in a lookup table.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dictionary</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>, </em><em>DataFrame</em>) – The dictionary containing the feature
+<li><strong>dictionary</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>DataFrame</em>) – The dictionary containing the feature
 values. Either a string giving the path to the dictionary file,
 or a pandas DF. Format must be tab-delimited, with the first column
 containing the text key used for lookup. Subsequent columns each
 represent a single feature that can be used in extraction.</li>
-<li><strong>variables</strong> (<em>list</em>) – Optional subset of columns to keep from the
+<li><strong>variables</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – Optional subset of columns to keep from the
 dictionary.</li>
 <li><strong>missing</strong> – Value to insert if no lookup value is found for a text token.
 Defaults to numpy’s NaN.</li>
@@ -233,7 +233,7 @@ Defaults to numpy’s NaN.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pliers.extractors.PredefinedDictionaryExtractor &mdash; pliers 0.2 documentation</title>
+  <title>pliers.extractors.PredefinedDictionaryExtractor &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="../index.html"/> 
+    <link rel="top" title="pliers 0.3.0 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -166,7 +166,7 @@
 <h1>pliers.extractors.PredefinedDictionaryExtractor<a class="headerlink" href="#pliers-extractors-predefineddictionaryextractor" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="pliers.extractors.PredefinedDictionaryExtractor">
-<em class="property">class </em><code class="descclassname">pliers.extractors.</code><code class="descname">PredefinedDictionaryExtractor</code><span class="sig-paren">(</span><em>variables</em>, <em>missing=nan</em>, <em>case_sensitive=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/extractors/text.html#PredefinedDictionaryExtractor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.extractors.PredefinedDictionaryExtractor" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pliers.extractors.</code><code class="descname">PredefinedDictionaryExtractor</code><span class="sig-paren">(</span><em>variables</em>, <em>missing=nan</em>, <em>case_sensitive=True</em>, <em>force_retrieve=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/extractors/text.html#PredefinedDictionaryExtractor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.extractors.PredefinedDictionaryExtractor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">pliers.extractors.text.DictionaryExtractor</span></code></p>
 <p>A generic Extractor that maps words onto values via one or more
 pre-defined dictionaries accessed via the web.</p>
@@ -175,7 +175,7 @@ pre-defined dictionaries accessed via the web.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>variables</strong> (<em>list</em><em> or </em><a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) – A specification of the dictionaries and
+<li><strong>variables</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – A specification of the dictionaries and
 column names to map the input TextStims onto. If a list, each
 element must be a string with the format ‘dict/column’, where the
 value before the slash gives the name of the dictionary, and the
@@ -186,10 +186,13 @@ valid values are ‘affect/V.Mean.Sum’ and
 ‘subtlexusfrequency/Lg10WF’. If a dict, the keys are the names of
 the dictionary files (e.g., ‘affect’), and the values are lists
 of columns to use (e.g., [‘V.Mean.Sum’, ‘V.SD.Sum’]).</li>
-<li><strong>missing</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) – Value to use when an entry for a word is missing in
+<li><strong>missing</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a>) – Value to use when an entry for a word is missing in
 a dictionary (defaults to numpy’s NaN).</li>
-<li><strong>case_sensitive</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – If True, entries in the dictionary are treated
+<li><strong>case_sensitive</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – If True, entries in the dictionary are treated
 as case-sensitive (e.g., ‘John’ and ‘john’ are different words).</li>
+<li><strong>force_retrieve</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – If True, the source dictionary will always be
+retrieved/download, even if it exists locally. If False, a cached
+local version will be used if it exists.</li>
 </ul>
 </td>
 </tr>
@@ -197,7 +200,7 @@ as case-sensitive (e.g., ‘John’ and ‘john’ are different words).</li>
 </table>
 <dl class="method">
 <dt id="pliers.extractors.PredefinedDictionaryExtractor.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>variables</em>, <em>missing=nan</em>, <em>case_sensitive=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/extractors/text.html#PredefinedDictionaryExtractor.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.extractors.PredefinedDictionaryExtractor.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>variables</em>, <em>missing=nan</em>, <em>case_sensitive=True</em>, <em>force_retrieve=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/extractors/text.html#PredefinedDictionaryExtractor.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.extractors.PredefinedDictionaryExtractor.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -239,7 +242,7 @@ as case-sensitive (e.g., ‘John’ and ‘john’ are different words).</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

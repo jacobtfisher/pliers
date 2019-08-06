@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pliers.stimuli.audio &mdash; pliers 0.2 documentation</title>
+  <title>pliers.stimuli.audio &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="../../../index.html"/>
+    <link rel="top" title="pliers 0.3.0 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -168,10 +168,7 @@
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">Stim</span>
 <span class="kn">from</span> <span class="nn">moviepy.audio.io.AudioFileClip</span> <span class="k">import</span> <span class="n">AudioFileClip</span>
-
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">from</span> <span class="nn">moviepy.video.io.ffmpeg_reader</span> <span class="k">import</span> <span class="n">ffmpeg_parse_infos</span>
 
 
 <div class="viewcode-block" id="AudioStim"><a class="viewcode-back" href="../../../generated/pliers.stimuli.AudioStim.html#pliers.stimuli.AudioStim">[docs]</a><span class="k">class</span> <span class="nc">AudioStim</span><span class="p">(</span><span class="n">Stim</span><span class="p">):</span>
@@ -200,13 +197,13 @@
             <span class="n">filename</span> <span class="o">=</span> <span class="n">url</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">sampling_rate</span> <span class="o">=</span> <span class="n">sampling_rate</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sampling_rate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sampling_rate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
-
         <span class="k">if</span> <span class="n">clip</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sampling_rate</span> <span class="o">=</span> <span class="n">clip</span><span class="o">.</span><span class="n">fps</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">clip</span> <span class="o">=</span> <span class="n">clip</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sampling_rate</span> <span class="o">=</span> <span class="n">sampling_rate</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sampling_rate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sampling_rate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_load_clip</span><span class="p">()</span>
 
         <span class="c1"># Small default buffer isn&#39;t ideal, but moviepy has persistent issues</span>
@@ -220,46 +217,19 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">AudioStim</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">filename</span><span class="p">,</span> <span class="n">onset</span><span class="o">=</span><span class="n">onset</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="AudioStim.get_sampling_rate"><a class="viewcode-back" href="../../../generated/pliers.stimuli.AudioStim.html#pliers.stimuli.AudioStim.get_sampling_rate">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_sampling_rate</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39; Use FFMPEG to get the sampling rate, most of this code was</span>
-<span class="sd">        adapted from the moviepy codebase &#39;&#39;&#39;</span>
-        <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ffmpeg&#39;</span><span class="p">,</span> <span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">]</span>
-
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">devnull</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">devnull</span><span class="p">:</span>
-            <span class="n">creationflags</span> <span class="o">=</span> <span class="mh">0x08000000</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;nt&#39;</span> <span class="k">else</span> <span class="mi">0</span>
-            <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span>
-                                 <span class="n">stdin</span><span class="o">=</span><span class="n">devnull</span><span class="p">,</span>
-                                 <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
-                                 <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
-                                 <span class="n">creationflags</span><span class="o">=</span><span class="n">creationflags</span><span class="p">)</span>
-
-        <span class="n">_</span><span class="p">,</span> <span class="n">p_err</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
-        <span class="k">del</span> <span class="n">p</span>
-
-        <span class="n">lines</span> <span class="o">=</span> <span class="n">p_err</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
-        <span class="k">if</span> <span class="s1">&#39;No such file or directory&#39;</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">((</span><span class="s1">&#39;Error: the file </span><span class="si">%s</span><span class="s1"> could not be found.</span><span class="se">\n</span><span class="s1">&#39;</span>
-                           <span class="s1">&#39;Please check that you entered the correct &#39;</span>
-                           <span class="s1">&#39;path.&#39;</span><span class="p">)</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
-
-        <span class="n">lines_audio</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lines</span> <span class="k">if</span> <span class="s1">&#39; Audio: &#39;</span> <span class="ow">in</span> <span class="n">l</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="n">lines_audio</span><span class="p">:</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="n">lines_audio</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39; [0-9]* Hz&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
-                <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="n">match</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span><span class="n">match</span><span class="o">.</span><span class="n">end</span><span class="p">()</span> <span class="o">-</span> <span class="mi">3</span><span class="p">])</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">pass</span>
-
-        <span class="c1"># Return a sensible default</span>
-        <span class="k">return</span> <span class="mi">44100</span></div>
+            <span class="n">filename</span><span class="p">,</span> <span class="n">onset</span><span class="o">=</span><span class="n">onset</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_load_clip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clip</span> <span class="o">=</span> <span class="n">AudioFileClip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AudioStim.get_sampling_rate"><a class="viewcode-back" href="../../../generated/pliers.stimuli.AudioStim.html#pliers.stimuli.AudioStim.get_sampling_rate">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_sampling_rate</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Use moviepy/FFMPEG to get the sampling rate &#39;&#39;&#39;</span>
+        <span class="n">infos</span> <span class="o">=</span> <span class="n">ffmpeg_parse_infos</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">fps</span> <span class="o">=</span> <span class="n">infos</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;audio_fps&#39;</span><span class="p">,</span> <span class="mi">44100</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fps</span> <span class="o">==</span> <span class="s1">&#39;unknown&#39;</span><span class="p">:</span>
+            <span class="n">fps</span> <span class="o">=</span> <span class="mi">44100</span>
+        <span class="k">return</span> <span class="n">fps</span></div>
 
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -313,7 +283,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

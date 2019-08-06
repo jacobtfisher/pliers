@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pliers.extractors.image &mdash; pliers 0.2 documentation</title>
+  <title>pliers.extractors.image &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="../../../index.html"/>
+    <link rel="top" title="pliers 0.3.0 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -287,12 +287,11 @@
     <span class="k">def</span> <span class="nf">_extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stim</span><span class="p">):</span>
         <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">stim</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="n">feature_names</span> <span class="o">=</span> <span class="n">listify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_feature_names</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">ExtractorResult</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">stim</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="n">feature_names</span><span class="p">,</span>
-                               <span class="n">raw</span><span class="o">=</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ExtractorResult</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">stim</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="n">feature_names</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">cols</span> <span class="o">=</span> <span class="n">listify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_feature</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="n">r</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">raw</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="n">r</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">_data</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="FaceRecognitionFaceEncodingsExtractor"><a class="viewcode-back" href="../../../generated/pliers.extractors.FaceRecognitionFaceEncodingsExtractor.html#pliers.extractors.FaceRecognitionFaceEncodingsExtractor">[docs]</a><span class="k">class</span> <span class="nc">FaceRecognitionFaceEncodingsExtractor</span><span class="p">(</span><span class="n">FaceRecognitionFeatureExtractor</span><span class="p">):</span>
@@ -311,7 +310,7 @@
     <span class="n">_feature</span> <span class="o">=</span> <span class="s1">&#39;face_landmarks&#39;</span>
 
     <span class="k">def</span> <span class="nf">_to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">raw</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
         <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_feature</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
@@ -358,7 +357,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

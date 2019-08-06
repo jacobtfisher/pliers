@@ -1,0 +1,431 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pliers.extractors.api.clarifai &mdash; pliers 0.3.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../../search.html"/>
+    <link rel="top" title="pliers 0.3.0 documentation" href="../../../../index.html"/>
+        <link rel="up" title="Module code" href="../../../index.html"/> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> pliers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installing pliers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basic-concepts.html">Basic concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stimuli.html">Stims</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../transformers.html">Transformers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../graphs.html">Graphs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../results.html">Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../config.html">Configuring pliers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../reference.html">Pliers API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">pliers</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>pliers.extractors.api.clarifai</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pliers.extractors.api.clarifai</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Extractors that interact with the Clarifai API.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">contextlib</span> <span class="k">import</span> <span class="n">ExitStack</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">contextlib2</span> <span class="k">import</span> <span class="n">ExitStack</span>
+<span class="kn">from</span> <span class="nn">pliers.extractors.image</span> <span class="k">import</span> <span class="n">ImageExtractor</span>
+<span class="kn">from</span> <span class="nn">pliers.extractors.video</span> <span class="k">import</span> <span class="n">VideoExtractor</span>
+<span class="kn">from</span> <span class="nn">pliers.extractors.base</span> <span class="k">import</span> <span class="n">ExtractorResult</span>
+<span class="kn">from</span> <span class="nn">pliers.transformers</span> <span class="k">import</span> <span class="n">BatchTransformerMixin</span>
+<span class="kn">from</span> <span class="nn">pliers.transformers.api</span> <span class="k">import</span> <span class="n">APITransformer</span>
+<span class="kn">from</span> <span class="nn">pliers.utils</span> <span class="k">import</span> <span class="n">listify</span><span class="p">,</span> <span class="n">attempt_to_import</span><span class="p">,</span> <span class="n">verify_dependencies</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">clarifai_client</span> <span class="o">=</span> <span class="n">attempt_to_import</span><span class="p">(</span><span class="s1">&#39;clarifai.rest.client&#39;</span><span class="p">,</span> <span class="s1">&#39;clarifai_client&#39;</span><span class="p">,</span>
+                                    <span class="p">[</span><span class="s1">&#39;ClarifaiApp&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;Concept&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;ModelOutputConfig&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;ModelOutputInfo&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;Image&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;Video&#39;</span><span class="p">])</span>
+
+
+<span class="k">class</span> <span class="nc">ClarifaiAPIExtractor</span><span class="p">(</span><span class="n">APITransformer</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Uses the Clarifai API to extract tags of visual stimuli.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        api_key (str): A valid API_KEY for the Clarifai API. Only needs to be</span>
+<span class="sd">            passed the first time the extractor is initialized.</span>
+<span class="sd">        model (str): The name of the Clarifai model to use. If None, defaults</span>
+<span class="sd">            to the general image tagger.</span>
+<span class="sd">        min_value (float): A value between 0.0 and 1.0 indicating the minimum</span>
+<span class="sd">            confidence required to return a prediction. Defaults to 0.0.</span>
+<span class="sd">        max_concepts (int): A value between 0 and 200 indicating the maximum</span>
+<span class="sd">            number of label predictions returned.</span>
+<span class="sd">        select_concepts (list): List of concepts (strings) to query from the</span>
+<span class="sd">            API. For example, [&#39;food&#39;, &#39;animal&#39;].</span>
+<span class="sd">        rate_limit (int): The minimum number of seconds required between</span>
+<span class="sd">            transform calls on this Transformer.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">_log_attributes</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;api_key&#39;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;model_name&#39;</span><span class="p">,</span> <span class="s1">&#39;min_value&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;max_concepts&#39;</span><span class="p">,</span> <span class="s1">&#39;select_concepts&#39;</span><span class="p">)</span>
+    <span class="n">_env_keys</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;CLARIFAI_API_KEY&#39;</span><span class="p">,)</span>
+    <span class="n">VERSION</span> <span class="o">=</span> <span class="s1">&#39;1.0&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;general-v1.3&#39;</span><span class="p">,</span> <span class="n">min_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">max_concepts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">select_concepts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rate_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">verify_dependencies</span><span class="p">([</span><span class="s1">&#39;clarifai_client&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">api_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">api_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;CLARIFAI_API_KEY&#39;</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;A valid Clarifai API API_KEY &quot;</span>
+                                 <span class="s2">&quot;must be passed the first time a Clarifai &quot;</span>
+                                 <span class="s2">&quot;extractor is initialized.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="n">api_key</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api</span> <span class="o">=</span> <span class="n">clarifai_client</span><span class="o">.</span><span class="n">ClarifaiApp</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">api_key</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">clarifai_client</span><span class="o">.</span><span class="n">ApiError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_name</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_value</span> <span class="o">=</span> <span class="n">min_value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_concepts</span> <span class="o">=</span> <span class="n">max_concepts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_concepts</span> <span class="o">=</span> <span class="n">select_concepts</span>
+        <span class="k">if</span> <span class="n">select_concepts</span><span class="p">:</span>
+            <span class="n">select_concepts</span> <span class="o">=</span> <span class="n">listify</span><span class="p">(</span><span class="n">select_concepts</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">select_concepts</span> <span class="o">=</span> <span class="p">[</span><span class="n">clarifai_client</span><span class="o">.</span><span class="n">Concept</span><span class="p">(</span><span class="n">concept_name</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+                                    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">select_concepts</span><span class="p">]</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ClarifaiAPIExtractor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">rate_limit</span><span class="o">=</span><span class="n">rate_limit</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">api_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">check_valid_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_query_api</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objects</span><span class="p">):</span>
+        <span class="n">verify_dependencies</span><span class="p">([</span><span class="s1">&#39;clarifai_client&#39;</span><span class="p">])</span>
+        <span class="n">moc</span> <span class="o">=</span> <span class="n">clarifai_client</span><span class="o">.</span><span class="n">ModelOutputConfig</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">min_value</span><span class="p">,</span>
+                                                <span class="n">max_concepts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_concepts</span><span class="p">,</span>
+                                                <span class="n">select_concepts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">select_concepts</span><span class="p">)</span>
+        <span class="n">model_output_info</span> <span class="o">=</span> <span class="n">clarifai_client</span><span class="o">.</span><span class="n">ModelOutputInfo</span><span class="p">(</span><span class="n">output_config</span><span class="o">=</span><span class="n">moc</span><span class="p">)</span>
+        <span class="n">tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">objects</span><span class="p">,</span> <span class="n">model_output_info</span><span class="o">=</span><span class="n">model_output_info</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tags</span><span class="p">[</span><span class="s1">&#39;outputs&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_parse_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation</span><span class="p">):</span>
+        <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;concepts&#39;</span><span class="p">]:</span>
+            <span class="n">data_dict</span><span class="p">[</span><span class="n">tag</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">tag</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">data_dict</span>
+
+
+<div class="viewcode-block" id="ClarifaiAPIImageExtractor"><a class="viewcode-back" href="../../../../generated/pliers.extractors.ClarifaiAPIImageExtractor.html#pliers.extractors.ClarifaiAPIImageExtractor">[docs]</a><span class="k">class</span> <span class="nc">ClarifaiAPIImageExtractor</span><span class="p">(</span><span class="n">ClarifaiAPIExtractor</span><span class="p">,</span> <span class="n">BatchTransformerMixin</span><span class="p">,</span>
+                                <span class="n">ImageExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Uses the Clarifai API to extract tags of images.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        api_key (str): A valid API_KEY for the Clarifai API. Only needs to be</span>
+<span class="sd">            passed the first time the extractor is initialized.</span>
+<span class="sd">        model (str): The name of the Clarifai model to use. If None, defaults</span>
+<span class="sd">            to the general image tagger.</span>
+<span class="sd">        min_value (float): A value between 0.0 and 1.0 indicating the minimum</span>
+<span class="sd">            confidence required to return a prediction. Defaults to 0.0.</span>
+<span class="sd">        max_concepts (int): A value between 0 and 200 indicating the maximum</span>
+<span class="sd">            number of label predictions returned.</span>
+<span class="sd">        select_concepts (list): List of concepts (strings) to query from the</span>
+<span class="sd">            API. For example, [&#39;food&#39;, &#39;animal&#39;].</span>
+<span class="sd">        rate_limit (int): The minimum number of seconds required between</span>
+<span class="sd">            transform calls on this Transformer.</span>
+<span class="sd">        batch_size (int): Number of stims to send per batched API request.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">_batch_size</span> <span class="o">=</span> <span class="mi">32</span>
+
+<div class="viewcode-block" id="ClarifaiAPIImageExtractor.__init__"><a class="viewcode-back" href="../../../../generated/pliers.extractors.ClarifaiAPIImageExtractor.html#pliers.extractors.ClarifaiAPIImageExtractor.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;general-v1.3&#39;</span><span class="p">,</span> <span class="n">min_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">max_concepts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">select_concepts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rate_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ClarifaiAPIImageExtractor</span><span class="p">,</span>
+              <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">api_key</span><span class="p">,</span>
+                             <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+                             <span class="n">min_value</span><span class="o">=</span><span class="n">min_value</span><span class="p">,</span>
+                             <span class="n">max_concepts</span><span class="o">=</span><span class="n">max_concepts</span><span class="p">,</span>
+                             <span class="n">select_concepts</span><span class="o">=</span><span class="n">select_concepts</span><span class="p">,</span>
+                             <span class="n">rate_limit</span><span class="o">=</span><span class="n">rate_limit</span><span class="p">,</span>
+                             <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stims</span><span class="p">):</span>
+        <span class="n">verify_dependencies</span><span class="p">([</span><span class="s1">&#39;clarifai_client&#39;</span><span class="p">])</span>
+
+        <span class="c1"># ExitStack lets us use filename context managers simultaneously</span>
+        <span class="k">with</span> <span class="n">ExitStack</span><span class="p">()</span> <span class="k">as</span> <span class="n">stack</span><span class="p">:</span>
+            <span class="n">imgs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">stims</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">url</span><span class="p">:</span>
+                    <span class="n">imgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">clarifai_client</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">url</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">f</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">get_filename</span><span class="p">())</span>
+                    <span class="n">imgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">clarifai_client</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">f</span><span class="p">))</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_api</span><span class="p">(</span><span class="n">imgs</span><span class="p">)</span>
+
+        <span class="n">extractions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">resp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">outputs</span><span class="p">):</span>
+            <span class="n">extractions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ExtractorResult</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="n">stims</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">extractions</span>
+
+    <span class="k">def</span> <span class="nf">_to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_parse_annotations</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">_data</span><span class="p">)])</span></div>
+
+
+<div class="viewcode-block" id="ClarifaiAPIVideoExtractor"><a class="viewcode-back" href="../../../../generated/pliers.extractors.ClarifaiAPIVideoExtractor.html#pliers.extractors.ClarifaiAPIVideoExtractor">[docs]</a><span class="k">class</span> <span class="nc">ClarifaiAPIVideoExtractor</span><span class="p">(</span><span class="n">ClarifaiAPIExtractor</span><span class="p">,</span> <span class="n">VideoExtractor</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">_extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stim</span><span class="p">):</span>
+        <span class="n">verify_dependencies</span><span class="p">([</span><span class="s1">&#39;clarifai_client&#39;</span><span class="p">])</span>
+        <span class="k">with</span> <span class="n">stim</span><span class="o">.</span><span class="n">get_filename</span><span class="p">()</span> <span class="k">as</span> <span class="n">filename</span><span class="p">:</span>
+            <span class="n">vids</span> <span class="o">=</span> <span class="p">[</span><span class="n">clarifai_client</span><span class="o">.</span><span class="n">Video</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)]</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_api</span><span class="p">(</span><span class="n">vids</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ExtractorResult</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">stim</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="n">onsets</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">durations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">frames</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;frames&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">frame_res</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parse_annotations</span><span class="p">(</span><span class="n">frame_res</span><span class="p">))</span>
+            <span class="n">onset</span> <span class="o">=</span> <span class="n">frame_res</span><span class="p">[</span><span class="s1">&#39;frame_info&#39;</span><span class="p">][</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mf">1000.0</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">stim</span><span class="o">.</span><span class="n">duration</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="n">frames</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;frame_info&#39;</span><span class="p">][</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mf">1000.0</span>
+            <span class="n">onsets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">onset</span><span class="p">)</span>
+            <span class="c1"># NOTE: As of Clarifai API v2 and client library 2.6.1, the API</span>
+            <span class="c1"># returns more frames than it should—at least for some videos.</span>
+            <span class="c1"># E.g., given a 5.5 second clip, it may return 7 frames, with the</span>
+            <span class="c1"># last beginning at 6000 ms. Since this appears to be a problem on</span>
+            <span class="c1"># the Clarifai end, and it&#39;s not actually clear how they&#39;re getting</span>
+            <span class="c1"># this imaginary frame (I&#39;m guessing it&#39;s the very last frame?),</span>
+            <span class="c1"># we&#39;re not going to do anything about it here, except to make sure</span>
+            <span class="c1"># that durations aren&#39;t negative.</span>
+            <span class="n">durations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">max</span><span class="p">([</span><span class="n">end</span> <span class="o">-</span> <span class="n">onset</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
+
+        <span class="n">result</span><span class="o">.</span><span class="n">_onsets</span> <span class="o">=</span> <span class="n">onsets</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">_durations</span> <span class="o">=</span> <span class="n">durations</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Developers of pliers.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'0.3.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

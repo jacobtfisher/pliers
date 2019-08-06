@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pliers.converters.image &mdash; pliers 0.2 documentation</title>
+  <title>pliers.converters.image &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="../../../index.html"/>
+    <link rel="top" title="pliers 0.3.0 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -192,8 +192,7 @@
     <span class="k">def</span> <span class="nf">_convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stim</span><span class="p">):</span>
         <span class="n">verify_dependencies</span><span class="p">([</span><span class="s1">&#39;pytesseract&#39;</span><span class="p">])</span>
         <span class="n">text</span> <span class="o">=</span> <span class="n">pytesseract</span><span class="o">.</span><span class="n">image_to_string</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">stim</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">TextStim</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">onset</span><span class="o">=</span><span class="n">stim</span><span class="o">.</span><span class="n">onset</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="n">stim</span><span class="o">.</span><span class="n">duration</span><span class="p">,</span>
-                        <span class="n">order</span><span class="o">=</span><span class="n">stim</span><span class="o">.</span><span class="n">order</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">TextStim</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
@@ -230,7 +229,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

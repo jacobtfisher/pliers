@@ -1,0 +1,397 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pliers.extractors.api.indico &mdash; pliers 0.3.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../../search.html"/>
+    <link rel="top" title="pliers 0.3.0 documentation" href="../../../../index.html"/>
+        <link rel="up" title="Module code" href="../../../index.html"/> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> pliers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installing pliers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basic-concepts.html">Basic concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stimuli.html">Stims</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../transformers.html">Transformers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../graphs.html">Graphs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../results.html">Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../config.html">Configuring pliers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../reference.html">Pliers API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">pliers</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>pliers.extractors.api.indico</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pliers.extractors.api.indico</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Extractors that interact with the Indico API.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">pliers.extractors.image</span> <span class="k">import</span> <span class="n">ImageExtractor</span>
+<span class="kn">from</span> <span class="nn">pliers.extractors.text</span> <span class="k">import</span> <span class="n">TextExtractor</span>
+<span class="kn">from</span> <span class="nn">pliers.extractors.base</span> <span class="k">import</span> <span class="n">Extractor</span><span class="p">,</span> <span class="n">ExtractorResult</span>
+<span class="kn">from</span> <span class="nn">pliers.transformers</span> <span class="k">import</span> <span class="n">BatchTransformerMixin</span>
+<span class="kn">from</span> <span class="nn">pliers.transformers.api</span> <span class="k">import</span> <span class="n">APITransformer</span>
+<span class="kn">from</span> <span class="nn">pliers.utils</span> <span class="k">import</span> <span class="n">attempt_to_import</span><span class="p">,</span> <span class="n">verify_dependencies</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">indicoio</span> <span class="o">=</span> <span class="n">attempt_to_import</span><span class="p">(</span><span class="s1">&#39;indicoio&#39;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">IndicoAPIExtractor</span><span class="p">(</span><span class="n">APITransformer</span><span class="p">,</span> <span class="n">BatchTransformerMixin</span><span class="p">,</span> <span class="n">Extractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Base class for all Indico API Extractors</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        api_key (str): A valid API key for the Indico API. Only needs to be</span>
+<span class="sd">            passed the first time the extractor is initialized.</span>
+<span class="sd">        models (list): The names of the Indico models to use.</span>
+<span class="sd">        rate_limit (int): The minimum number of seconds required between</span>
+<span class="sd">            transform calls on this Transformer.</span>
+<span class="sd">        batch_size (int): Number of stims to send per batched API request.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">_log_attributes</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;api_key&#39;</span><span class="p">,</span> <span class="s1">&#39;models&#39;</span><span class="p">,</span> <span class="s1">&#39;model_names&#39;</span><span class="p">)</span>
+    <span class="n">_input_type</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">_batch_size</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">_env_keys</span> <span class="o">=</span> <span class="s1">&#39;INDICO_APP_KEY&#39;</span>
+    <span class="n">VERSION</span> <span class="o">=</span> <span class="s1">&#39;1.0&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">models</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rate_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">verify_dependencies</span><span class="p">([</span><span class="s1">&#39;indicoio&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">api_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;INDICO_APP_KEY&#39;</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;A valid Indico API Key &quot;</span>
+                                 <span class="s2">&quot;must be passed the first time an Indico &quot;</span>
+                                 <span class="s2">&quot;extractor is initialized.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="n">api_key</span>
+        <span class="n">indicoio</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span>
+
+        <span class="k">if</span> <span class="n">models</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must enter a valid list of models to use. &quot;</span>
+                             <span class="s2">&quot;Valid models: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allowed_models</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allowed_models</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported model </span><span class="si">{}</span><span class="s2"> specified. &quot;</span>
+                                 <span class="s2">&quot;Valid models: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allowed_models</span><span class="p">)))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_names</span> <span class="o">=</span> <span class="n">models</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">models</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">indicoio</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span> <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">models</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="n">models</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">IndicoAPIExtractor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">rate_limit</span><span class="o">=</span><span class="n">rate_limit</span><span class="p">,</span>
+                                                 <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">api_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">check_valid_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">verify_dependencies</span><span class="p">([</span><span class="s1">&#39;indicoio&#39;</span><span class="p">])</span>
+        <span class="kn">from</span> <span class="nn">indicoio.utils</span> <span class="k">import</span> <span class="n">api</span>
+        <span class="kn">from</span> <span class="nn">indicoio.utils.errors</span> <span class="k">import</span> <span class="n">IndicoError</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">api</span><span class="o">.</span><span class="n">api_handler</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_names</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">except</span> <span class="n">IndicoError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Invalid API key&#39;</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># If valid key, a data error (None passed) is expected here</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_get_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stims</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">stim</span><span class="o">.</span><span class="n">data</span> <span class="k">for</span> <span class="n">stim</span> <span class="ow">in</span> <span class="n">stims</span> <span class="k">if</span> <span class="n">stim</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stims</span><span class="p">):</span>
+        <span class="n">stims</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">stims</span><span class="p">)</span>
+        <span class="n">tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_tokens</span><span class="p">(</span><span class="n">stims</span><span class="p">)</span>
+        <span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="n">model</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">]</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">stim</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stims</span><span class="p">):</span>
+            <span class="n">stim_scores</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scores</span><span class="p">]</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ExtractorResult</span><span class="p">(</span><span class="n">stim_scores</span><span class="p">,</span> <span class="n">stim</span><span class="p">,</span> <span class="bp">self</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">results</span>
+
+    <span class="k">def</span> <span class="nf">_to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">model_response</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">_data</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model_response</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                <span class="n">data_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">model_response</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model_response</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">model_response</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">data_dict</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">k</span><span class="p">)]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">data_dict</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="IndicoAPITextExtractor"><a class="viewcode-back" href="../../../../generated/pliers.extractors.IndicoAPITextExtractor.html#pliers.extractors.IndicoAPITextExtractor">[docs]</a><span class="k">class</span> <span class="nc">IndicoAPITextExtractor</span><span class="p">(</span><span class="n">TextExtractor</span><span class="p">,</span> <span class="n">IndicoAPIExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Uses to Indico API to extract features from text, such as</span>
+<span class="sd">    sentiment extraction.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        api_key (str): A valid API key for the Indico API. Only needs to be</span>
+<span class="sd">            passed the first time the extractor is initialized.</span>
+<span class="sd">        models (list): The names of the Indico models to use.</span>
+<span class="sd">        rate_limit (int): The minimum number of seconds required between</span>
+<span class="sd">            transform calls on this Transformer.</span>
+<span class="sd">        batch_size (int): Number of stims to send per batched API request.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="IndicoAPITextExtractor.__init__"><a class="viewcode-back" href="../../../../generated/pliers.extractors.IndicoAPITextExtractor.html#pliers.extractors.IndicoAPITextExtractor.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">models</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rate_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">verify_dependencies</span><span class="p">([</span><span class="s1">&#39;indicoio&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_models</span> <span class="o">=</span> <span class="n">indicoio</span><span class="o">.</span><span class="n">TEXT_APIS</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">IndicoAPITextExtractor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">api_key</span><span class="p">,</span>
+                                                     <span class="n">models</span><span class="o">=</span><span class="n">models</span><span class="p">,</span>
+                                                     <span class="n">rate_limit</span><span class="o">=</span><span class="n">rate_limit</span><span class="p">,</span>
+                                                     <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="IndicoAPIImageExtractor"><a class="viewcode-back" href="../../../../generated/pliers.extractors.IndicoAPIImageExtractor.html#pliers.extractors.IndicoAPIImageExtractor">[docs]</a><span class="k">class</span> <span class="nc">IndicoAPIImageExtractor</span><span class="p">(</span><span class="n">ImageExtractor</span><span class="p">,</span> <span class="n">IndicoAPIExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Uses to Indico API to extract features from Images, such as</span>
+<span class="sd">    facial emotion recognition or content filtering.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        api_key (str): A valid API key for the Indico API. Only needs to be</span>
+<span class="sd">            passed the first time the extractor is initialized.</span>
+<span class="sd">        models (list): The names of the Indico models to use.</span>
+<span class="sd">        rate_limit (int): The minimum number of seconds required between</span>
+<span class="sd">            transform calls on this Transformer.</span>
+<span class="sd">        batch_size (int): Number of stims to send per batched API request.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="IndicoAPIImageExtractor.__init__"><a class="viewcode-back" href="../../../../generated/pliers.extractors.IndicoAPIImageExtractor.html#pliers.extractors.IndicoAPIImageExtractor.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">models</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rate_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">verify_dependencies</span><span class="p">([</span><span class="s1">&#39;indicoio&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_models</span> <span class="o">=</span> <span class="n">indicoio</span><span class="o">.</span><span class="n">IMAGE_APIS</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">IndicoAPIImageExtractor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">api_key</span><span class="p">,</span>
+                                                      <span class="n">models</span><span class="o">=</span><span class="n">models</span><span class="p">,</span>
+                                                      <span class="n">rate_limit</span><span class="o">=</span><span class="n">rate_limit</span><span class="p">,</span>
+                                                      <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stims</span><span class="p">):</span>
+        <span class="n">toks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">stims</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">url</span><span class="p">:</span>
+                <span class="n">toks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">s</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># IndicoIO breaks if given subclasses of ndarray, and data is</span>
+                <span class="c1"># an imageio Image instance, so we explicitly convert.</span>
+                <span class="n">toks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">toks</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Developers of pliers.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'0.3.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

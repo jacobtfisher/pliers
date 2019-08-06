@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Transformers &mdash; pliers 0.2 documentation</title>
+  <title>Transformers &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="index.html"/>
+    <link rel="top" title="pliers 0.3.0 documentation" href="index.html"/>
         <link rel="next" title="pliers.filters.AudioTrimmingFilter" href="generated/pliers.filters.AudioTrimmingFilter.html"/>
         <link rel="prev" title="Stims" href="stimuli.html"/> 
 
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -259,7 +259,7 @@
 <tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.ChromaSTFTExtractor.html#pliers.extractors.ChromaSTFTExtractor" title="pliers.extractors.ChromaSTFTExtractor"><code class="xref py py-obj docutils literal"><span class="pre">ChromaSTFTExtractor</span></code></a>([n_chroma])</td>
 <td>Extracts a chromagram from an audio’s waveform using the Librosa library.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.MeanAmplitudeExtractor.html#pliers.extractors.MeanAmplitudeExtractor" title="pliers.extractors.MeanAmplitudeExtractor"><code class="xref py py-obj docutils literal"><span class="pre">MeanAmplitudeExtractor</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.MeanAmplitudeExtractor.html#pliers.extractors.MeanAmplitudeExtractor" title="pliers.extractors.MeanAmplitudeExtractor"><code class="xref py py-obj docutils literal"><span class="pre">MeanAmplitudeExtractor</span></code></a>([name])</td>
 <td>Mean amplitude extractor for blocks of audio with transcription.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.MelspectrogramExtractor.html#pliers.extractors.MelspectrogramExtractor" title="pliers.extractors.MelspectrogramExtractor"><code class="xref py py-obj docutils literal"><span class="pre">MelspectrogramExtractor</span></code></a>([n_mels])</td>
@@ -271,8 +271,8 @@
 <tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.PolyFeaturesExtractor.html#pliers.extractors.PolyFeaturesExtractor" title="pliers.extractors.PolyFeaturesExtractor"><code class="xref py py-obj docutils literal"><span class="pre">PolyFeaturesExtractor</span></code></a>([order])</td>
 <td>Extracts the coefficients of fitting an nth-order polynomial to the columns of an audio’s spectrogram (via Librosa).</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.RMSEExtractor.html#pliers.extractors.RMSEExtractor" title="pliers.extractors.RMSEExtractor"><code class="xref py py-obj docutils literal"><span class="pre">RMSEExtractor</span></code></a>([feature,&nbsp;hop_length])</td>
-<td>Extracts root mean square (RMS) energy from audio using the Librosa library.</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.RMSExtractor.html#pliers.extractors.RMSExtractor" title="pliers.extractors.RMSExtractor"><code class="xref py py-obj docutils literal"><span class="pre">RMSExtractor</span></code></a>([feature,&nbsp;hop_length])</td>
+<td>Extracts root mean square (RMS) from audio using the Librosa library.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.SpectralCentroidExtractor.html#pliers.extractors.SpectralCentroidExtractor" title="pliers.extractors.SpectralCentroidExtractor"><code class="xref py py-obj docutils literal"><span class="pre">SpectralCentroidExtractor</span></code></a>([feature,&nbsp;hop_length])</td>
 <td>Extracts the spectral centroids from audio using the Librosa library.</td>
@@ -307,10 +307,10 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.BrightnessExtractor.html#pliers.extractors.BrightnessExtractor" title="pliers.extractors.BrightnessExtractor"><code class="xref py py-obj docutils literal"><span class="pre">BrightnessExtractor</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.BrightnessExtractor.html#pliers.extractors.BrightnessExtractor" title="pliers.extractors.BrightnessExtractor"><code class="xref py py-obj docutils literal"><span class="pre">BrightnessExtractor</span></code></a>([name])</td>
 <td>Gets the average luminosity of the pixels in the image</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.ClarifaiAPIExtractor.html#pliers.extractors.ClarifaiAPIExtractor" title="pliers.extractors.ClarifaiAPIExtractor"><code class="xref py py-obj docutils literal"><span class="pre">ClarifaiAPIExtractor</span></code></a>([api_key,&nbsp;model,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.ClarifaiAPIImageExtractor.html#pliers.extractors.ClarifaiAPIImageExtractor" title="pliers.extractors.ClarifaiAPIImageExtractor"><code class="xref py py-obj docutils literal"><span class="pre">ClarifaiAPIImageExtractor</span></code></a>([api_key,&nbsp;model,&nbsp;…])</td>
 <td>Uses the Clarifai API to extract tags of images.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.FaceRecognitionFaceEncodingsExtractor.html#pliers.extractors.FaceRecognitionFaceEncodingsExtractor" title="pliers.extractors.FaceRecognitionFaceEncodingsExtractor"><code class="xref py py-obj docutils literal"><span class="pre">FaceRecognitionFaceEncodingsExtractor</span></code></a>(…)</td>
@@ -322,22 +322,22 @@
 <tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.FaceRecognitionFaceLocationsExtractor.html#pliers.extractors.FaceRecognitionFaceLocationsExtractor" title="pliers.extractors.FaceRecognitionFaceLocationsExtractor"><code class="xref py py-obj docutils literal"><span class="pre">FaceRecognitionFaceLocationsExtractor</span></code></a>(…)</td>
 <td>Uses the face_recognition package to extract bounding boxes for all faces in an image.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.GoogleVisionAPIFaceExtractor.html#pliers.extractors.GoogleVisionAPIFaceExtractor" title="pliers.extractors.GoogleVisionAPIFaceExtractor"><code class="xref py py-obj docutils literal"><span class="pre">GoogleVisionAPIFaceExtractor</span></code></a>([batch_size])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.GoogleVisionAPIFaceExtractor.html#pliers.extractors.GoogleVisionAPIFaceExtractor" title="pliers.extractors.GoogleVisionAPIFaceExtractor"><code class="xref py py-obj docutils literal"><span class="pre">GoogleVisionAPIFaceExtractor</span></code></a>([…])</td>
 <td>Identifies faces in images using the Google Cloud Vision API.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.GoogleVisionAPILabelExtractor.html#pliers.extractors.GoogleVisionAPILabelExtractor" title="pliers.extractors.GoogleVisionAPILabelExtractor"><code class="xref py py-obj docutils literal"><span class="pre">GoogleVisionAPILabelExtractor</span></code></a>([batch_size])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.GoogleVisionAPILabelExtractor.html#pliers.extractors.GoogleVisionAPILabelExtractor" title="pliers.extractors.GoogleVisionAPILabelExtractor"><code class="xref py py-obj docutils literal"><span class="pre">GoogleVisionAPILabelExtractor</span></code></a>([…])</td>
 <td>Labels objects in images using the Google Cloud Vision API.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.GoogleVisionAPIPropertyExtractor.html#pliers.extractors.GoogleVisionAPIPropertyExtractor" title="pliers.extractors.GoogleVisionAPIPropertyExtractor"><code class="xref py py-obj docutils literal"><span class="pre">GoogleVisionAPIPropertyExtractor</span></code></a>([batch_size])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.GoogleVisionAPIPropertyExtractor.html#pliers.extractors.GoogleVisionAPIPropertyExtractor" title="pliers.extractors.GoogleVisionAPIPropertyExtractor"><code class="xref py py-obj docutils literal"><span class="pre">GoogleVisionAPIPropertyExtractor</span></code></a>([…])</td>
 <td>Extracts image properties using the Google Cloud Vision API.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.GoogleVisionAPISafeSearchExtractor.html#pliers.extractors.GoogleVisionAPISafeSearchExtractor" title="pliers.extractors.GoogleVisionAPISafeSearchExtractor"><code class="xref py py-obj docutils literal"><span class="pre">GoogleVisionAPISafeSearchExtractor</span></code></a>([batch_size])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.GoogleVisionAPISafeSearchExtractor.html#pliers.extractors.GoogleVisionAPISafeSearchExtractor" title="pliers.extractors.GoogleVisionAPISafeSearchExtractor"><code class="xref py py-obj docutils literal"><span class="pre">GoogleVisionAPISafeSearchExtractor</span></code></a>([…])</td>
 <td>Extracts safe search detection using the Google Cloud Vision API.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.GoogleVisionAPIWebEntitiesExtractor.html#pliers.extractors.GoogleVisionAPIWebEntitiesExtractor" title="pliers.extractors.GoogleVisionAPIWebEntitiesExtractor"><code class="xref py py-obj docutils literal"><span class="pre">GoogleVisionAPIWebEntitiesExtractor</span></code></a>([batch_size])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.GoogleVisionAPIWebEntitiesExtractor.html#pliers.extractors.GoogleVisionAPIWebEntitiesExtractor" title="pliers.extractors.GoogleVisionAPIWebEntitiesExtractor"><code class="xref py py-obj docutils literal"><span class="pre">GoogleVisionAPIWebEntitiesExtractor</span></code></a>([…])</td>
 <td>Extracts web entities using the Google Cloud Vision API.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.IndicoAPIImageExtractor.html#pliers.extractors.IndicoAPIImageExtractor" title="pliers.extractors.IndicoAPIImageExtractor"><code class="xref py py-obj docutils literal"><span class="pre">IndicoAPIImageExtractor</span></code></a>(**kwargs)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.IndicoAPIImageExtractor.html#pliers.extractors.IndicoAPIImageExtractor" title="pliers.extractors.IndicoAPIImageExtractor"><code class="xref py py-obj docutils literal"><span class="pre">IndicoAPIImageExtractor</span></code></a>([api_key,&nbsp;models,&nbsp;…])</td>
 <td>Uses to Indico API to extract features from Images, such as facial emotion recognition or content filtering.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.MicrosoftAPIFaceExtractor.html#pliers.extractors.MicrosoftAPIFaceExtractor" title="pliers.extractors.MicrosoftAPIFaceExtractor"><code class="xref py py-obj docutils literal"><span class="pre">MicrosoftAPIFaceExtractor</span></code></a>([face_id,&nbsp;…])</td>
@@ -346,34 +346,34 @@
 <tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.MicrosoftAPIFaceEmotionExtractor.html#pliers.extractors.MicrosoftAPIFaceEmotionExtractor" title="pliers.extractors.MicrosoftAPIFaceEmotionExtractor"><code class="xref py py-obj docutils literal"><span class="pre">MicrosoftAPIFaceEmotionExtractor</span></code></a>([face_id,&nbsp;…])</td>
 <td>Extracts facial emotions from images using the Microsoft API</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.MicrosoftVisionAPIExtractor.html#pliers.extractors.MicrosoftVisionAPIExtractor" title="pliers.extractors.MicrosoftVisionAPIExtractor"><code class="xref py py-obj docutils literal"><span class="pre">MicrosoftVisionAPIExtractor</span></code></a>([features])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.MicrosoftVisionAPIExtractor.html#pliers.extractors.MicrosoftVisionAPIExtractor" title="pliers.extractors.MicrosoftVisionAPIExtractor"><code class="xref py py-obj docutils literal"><span class="pre">MicrosoftVisionAPIExtractor</span></code></a>([features,&nbsp;…])</td>
 <td>Base MicrosoftVisionAPIExtractor class.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.MicrosoftVisionAPITagExtractor.html#pliers.extractors.MicrosoftVisionAPITagExtractor" title="pliers.extractors.MicrosoftVisionAPITagExtractor"><code class="xref py py-obj docutils literal"><span class="pre">MicrosoftVisionAPITagExtractor</span></code></a>([features])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.MicrosoftVisionAPITagExtractor.html#pliers.extractors.MicrosoftVisionAPITagExtractor" title="pliers.extractors.MicrosoftVisionAPITagExtractor"><code class="xref py py-obj docutils literal"><span class="pre">MicrosoftVisionAPITagExtractor</span></code></a>([…])</td>
 <td>Extracts image tags using the Microsoft API</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.MicrosoftVisionAPICategoryExtractor.html#pliers.extractors.MicrosoftVisionAPICategoryExtractor" title="pliers.extractors.MicrosoftVisionAPICategoryExtractor"><code class="xref py py-obj docutils literal"><span class="pre">MicrosoftVisionAPICategoryExtractor</span></code></a>([features])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.MicrosoftVisionAPICategoryExtractor.html#pliers.extractors.MicrosoftVisionAPICategoryExtractor" title="pliers.extractors.MicrosoftVisionAPICategoryExtractor"><code class="xref py py-obj docutils literal"><span class="pre">MicrosoftVisionAPICategoryExtractor</span></code></a>([…])</td>
 <td>Extracts image categories using the Microsoft API</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.MicrosoftVisionAPIImageTypeExtractor.html#pliers.extractors.MicrosoftVisionAPIImageTypeExtractor" title="pliers.extractors.MicrosoftVisionAPIImageTypeExtractor"><code class="xref py py-obj docutils literal"><span class="pre">MicrosoftVisionAPIImageTypeExtractor</span></code></a>([features])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.MicrosoftVisionAPIImageTypeExtractor.html#pliers.extractors.MicrosoftVisionAPIImageTypeExtractor" title="pliers.extractors.MicrosoftVisionAPIImageTypeExtractor"><code class="xref py py-obj docutils literal"><span class="pre">MicrosoftVisionAPIImageTypeExtractor</span></code></a>([…])</td>
 <td>Extracts image types (clipart, etc.) using the Microsoft API</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.MicrosoftVisionAPIColorExtractor.html#pliers.extractors.MicrosoftVisionAPIColorExtractor" title="pliers.extractors.MicrosoftVisionAPIColorExtractor"><code class="xref py py-obj docutils literal"><span class="pre">MicrosoftVisionAPIColorExtractor</span></code></a>([features])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.MicrosoftVisionAPIColorExtractor.html#pliers.extractors.MicrosoftVisionAPIColorExtractor" title="pliers.extractors.MicrosoftVisionAPIColorExtractor"><code class="xref py py-obj docutils literal"><span class="pre">MicrosoftVisionAPIColorExtractor</span></code></a>([…])</td>
 <td>Extracts image color attributes using the Microsoft API</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.MicrosoftVisionAPIAdultExtractor.html#pliers.extractors.MicrosoftVisionAPIAdultExtractor" title="pliers.extractors.MicrosoftVisionAPIAdultExtractor"><code class="xref py py-obj docutils literal"><span class="pre">MicrosoftVisionAPIAdultExtractor</span></code></a>([features])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.MicrosoftVisionAPIAdultExtractor.html#pliers.extractors.MicrosoftVisionAPIAdultExtractor" title="pliers.extractors.MicrosoftVisionAPIAdultExtractor"><code class="xref py py-obj docutils literal"><span class="pre">MicrosoftVisionAPIAdultExtractor</span></code></a>([…])</td>
 <td>Extracts the presence of adult content using the Microsoft API</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.SaliencyExtractor.html#pliers.extractors.SaliencyExtractor" title="pliers.extractors.SaliencyExtractor"><code class="xref py py-obj docutils literal"><span class="pre">SaliencyExtractor</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.SaliencyExtractor.html#pliers.extractors.SaliencyExtractor" title="pliers.extractors.SaliencyExtractor"><code class="xref py py-obj docutils literal"><span class="pre">SaliencyExtractor</span></code></a>([name])</td>
 <td>Determines the saliency of the image using Itti &amp; Koch (1998) algorithm</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.SharpnessExtractor.html#pliers.extractors.SharpnessExtractor" title="pliers.extractors.SharpnessExtractor"><code class="xref py py-obj docutils literal"><span class="pre">SharpnessExtractor</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.SharpnessExtractor.html#pliers.extractors.SharpnessExtractor" title="pliers.extractors.SharpnessExtractor"><code class="xref py py-obj docutils literal"><span class="pre">SharpnessExtractor</span></code></a>([name])</td>
 <td>Gets the degree of blur/sharpness of the image</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.TensorFlowInceptionV3Extractor.html#pliers.extractors.TensorFlowInceptionV3Extractor" title="pliers.extractors.TensorFlowInceptionV3Extractor"><code class="xref py py-obj docutils literal"><span class="pre">TensorFlowInceptionV3Extractor</span></code></a>([model_dir,&nbsp;…])</td>
-<td>Labels objects in images using a pretrained Inception V3 architecture  implemented in TensorFlow.</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">TensorFlowInceptionV3Extractor</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.VibranceExtractor.html#pliers.extractors.VibranceExtractor" title="pliers.extractors.VibranceExtractor"><code class="xref py py-obj docutils literal"><span class="pre">VibranceExtractor</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.VibranceExtractor.html#pliers.extractors.VibranceExtractor" title="pliers.extractors.VibranceExtractor"><code class="xref py py-obj docutils literal"><span class="pre">VibranceExtractor</span></code></a>([name])</td>
 <td>Gets the variance of color channels of the image</td>
 </tr>
 </tbody>
@@ -385,16 +385,16 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.ComplexTextExtractor.html#pliers.extractors.ComplexTextExtractor" title="pliers.extractors.ComplexTextExtractor"><code class="xref py py-obj docutils literal"><span class="pre">ComplexTextExtractor</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.ComplexTextExtractor.html#pliers.extractors.ComplexTextExtractor" title="pliers.extractors.ComplexTextExtractor"><code class="xref py py-obj docutils literal"><span class="pre">ComplexTextExtractor</span></code></a>([name])</td>
 <td>Base ComplexTextStim Extractor class; all subclasses can only be applied to ComplexTextStim instance.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.DictionaryExtractor.html#pliers.extractors.DictionaryExtractor" title="pliers.extractors.DictionaryExtractor"><code class="xref py py-obj docutils literal"><span class="pre">DictionaryExtractor</span></code></a>(dictionary[,&nbsp;variables,&nbsp;…])</td>
 <td>A generic dictionary-based extractor that supports extraction of arbitrary features contained in a lookup table.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.IndicoAPITextExtractor.html#pliers.extractors.IndicoAPITextExtractor" title="pliers.extractors.IndicoAPITextExtractor"><code class="xref py py-obj docutils literal"><span class="pre">IndicoAPITextExtractor</span></code></a>(**kwargs)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.IndicoAPITextExtractor.html#pliers.extractors.IndicoAPITextExtractor" title="pliers.extractors.IndicoAPITextExtractor"><code class="xref py py-obj docutils literal"><span class="pre">IndicoAPITextExtractor</span></code></a>([api_key,&nbsp;models,&nbsp;…])</td>
 <td>Uses to Indico API to extract features from text, such as sentiment extraction.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.LengthExtractor.html#pliers.extractors.LengthExtractor" title="pliers.extractors.LengthExtractor"><code class="xref py py-obj docutils literal"><span class="pre">LengthExtractor</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/pliers.extractors.LengthExtractor.html#pliers.extractors.LengthExtractor" title="pliers.extractors.LengthExtractor"><code class="xref py py-obj docutils literal"><span class="pre">LengthExtractor</span></code></a>([name])</td>
 <td>Extracts the length of the text in characters.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/pliers.extractors.NumUniqueWordsExtractor.html#pliers.extractors.NumUniqueWordsExtractor" title="pliers.extractors.NumUniqueWordsExtractor"><code class="xref py py-obj docutils literal"><span class="pre">NumUniqueWordsExtractor</span></code></a>([tokenizer])</td>
@@ -429,7 +429,7 @@
 </tr>
 </tbody>
 </table>
-<p>Note that, in practice, the number of features one can extract using the above classes is extremely large, because many of these Extractors return open-ended feature sets that are determined by the contents of the input <code class="xref py py-class docutils literal"><span class="pre">Stim</span></code> and/or the specified initialization arguments. For example, most of the image-labeling Extractors that rely on deep learning-based services (e.g., <a class="reference internal" href="generated/pliers.extractors.GoogleVisionAPILabelExtractor.html#pliers.extractors.GoogleVisionAPILabelExtractor" title="pliers.extractors.GoogleVisionAPILabelExtractor"><code class="xref py py-class docutils literal"><span class="pre">GoogleVisionAPILabelExtractor</span></code></a> and <a class="reference internal" href="generated/pliers.extractors.ClarifaiAPIExtractor.html#pliers.extractors.ClarifaiAPIExtractor" title="pliers.extractors.ClarifaiAPIExtractor"><code class="xref py py-class docutils literal"><span class="pre">ClarifaiAPIExtractor</span></code></a>) will return feature information for any of the top N objects detected in the image. And the <a class="reference internal" href="generated/pliers.extractors.PredefinedDictionaryExtractor.html#pliers.extractors.PredefinedDictionaryExtractor" title="pliers.extractors.PredefinedDictionaryExtractor"><code class="xref py py-class docutils literal"><span class="pre">PredefinedDictionaryExtractor</span></code></a> provides a standardized interface to a large number of online word lookup dictionaries (e.g., word norms for written frequency, age-of-acquisition, emotionality ratings, etc.).</p>
+<p>Note that, in practice, the number of features one can extract using the above classes is extremely large, because many of these Extractors return open-ended feature sets that are determined by the contents of the input <code class="xref py py-class docutils literal"><span class="pre">Stim</span></code> and/or the specified initialization arguments. For example, most of the image-labeling Extractors that rely on deep learning-based services (e.g., <a class="reference internal" href="generated/pliers.extractors.GoogleVisionAPILabelExtractor.html#pliers.extractors.GoogleVisionAPILabelExtractor" title="pliers.extractors.GoogleVisionAPILabelExtractor"><code class="xref py py-class docutils literal"><span class="pre">GoogleVisionAPILabelExtractor</span></code></a> and <a class="reference internal" href="generated/pliers.extractors.ClarifaiAPIImageExtractor.html#pliers.extractors.ClarifaiAPIImageExtractor" title="pliers.extractors.ClarifaiAPIImageExtractor"><code class="xref py py-class docutils literal"><span class="pre">ClarifaiAPIImageExtractor</span></code></a>) will return feature information for any of the top N objects detected in the image. And the <a class="reference internal" href="generated/pliers.extractors.PredefinedDictionaryExtractor.html#pliers.extractors.PredefinedDictionaryExtractor" title="pliers.extractors.PredefinedDictionaryExtractor"><code class="xref py py-class docutils literal"><span class="pre">PredefinedDictionaryExtractor</span></code></a> provides a standardized interface to a large number of online word lookup dictionaries (e.g., word norms for written frequency, age-of-acquisition, emotionality ratings, etc.).</p>
 </div>
 <div class="section" id="working-with-extractor-results">
 <h3>Working with Extractor results<a class="headerlink" href="#working-with-extractor-results" title="Permalink to this headline">¶</a></h3>
@@ -482,7 +482,7 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.converters.ComplexTextIterator.html#pliers.converters.ComplexTextIterator" title="pliers.converters.ComplexTextIterator"><code class="xref py py-obj docutils literal"><span class="pre">ComplexTextIterator</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.converters.ComplexTextIterator.html#pliers.converters.ComplexTextIterator" title="pliers.converters.ComplexTextIterator"><code class="xref py py-obj docutils literal"><span class="pre">ComplexTextIterator</span></code></a>([name])</td>
 <td>Iterates elements in a ComplexTextStim as TextStims.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/pliers.converters.IBMSpeechAPIConverter.html#pliers.converters.IBMSpeechAPIConverter" title="pliers.converters.IBMSpeechAPIConverter"><code class="xref py py-obj docutils literal"><span class="pre">IBMSpeechAPIConverter</span></code></a>([username,&nbsp;password,&nbsp;…])</td>
@@ -494,19 +494,19 @@
 <tr class="row-even"><td><a class="reference internal" href="generated/pliers.converters.GoogleVisionAPITextConverter.html#pliers.converters.GoogleVisionAPITextConverter" title="pliers.converters.GoogleVisionAPITextConverter"><code class="xref py py-obj docutils literal"><span class="pre">GoogleVisionAPITextConverter</span></code></a>([…])</td>
 <td>Detects text within images using the Google Cloud Vision API.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.converters.MicrosoftAPITextConverter.html#pliers.converters.MicrosoftAPITextConverter" title="pliers.converters.MicrosoftAPITextConverter"><code class="xref py py-obj docutils literal"><span class="pre">MicrosoftAPITextConverter</span></code></a>([language])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.converters.MicrosoftAPITextConverter.html#pliers.converters.MicrosoftAPITextConverter" title="pliers.converters.MicrosoftAPITextConverter"><code class="xref py py-obj docutils literal"><span class="pre">MicrosoftAPITextConverter</span></code></a>([language,&nbsp;…])</td>
 <td>Detects text within images using the Microsoft Vision API.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/pliers.converters.TesseractConverter.html#pliers.converters.TesseractConverter" title="pliers.converters.TesseractConverter"><code class="xref py py-obj docutils literal"><span class="pre">TesseractConverter</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/pliers.converters.TesseractConverter.html#pliers.converters.TesseractConverter" title="pliers.converters.TesseractConverter"><code class="xref py py-obj docutils literal"><span class="pre">TesseractConverter</span></code></a>([name])</td>
 <td>Uses the Tesseract library to extract text from images.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.converters.VideoFrameCollectionIterator.html#pliers.converters.VideoFrameCollectionIterator" title="pliers.converters.VideoFrameCollectionIterator"><code class="xref py py-obj docutils literal"><span class="pre">VideoFrameCollectionIterator</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.converters.VideoFrameCollectionIterator.html#pliers.converters.VideoFrameCollectionIterator" title="pliers.converters.VideoFrameCollectionIterator"><code class="xref py py-obj docutils literal"><span class="pre">VideoFrameCollectionIterator</span></code></a>([name])</td>
 <td>Iterates frames in a DerivedVideoStim as ImageStims.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/pliers.converters.VideoFrameIterator.html#pliers.converters.VideoFrameIterator" title="pliers.converters.VideoFrameIterator"><code class="xref py py-obj docutils literal"><span class="pre">VideoFrameIterator</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/pliers.converters.VideoFrameIterator.html#pliers.converters.VideoFrameIterator" title="pliers.converters.VideoFrameIterator"><code class="xref py py-obj docutils literal"><span class="pre">VideoFrameIterator</span></code></a>([name])</td>
 <td>Iterates frames in a VideoStim as ImageStims.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.converters.VideoToAudioConverter.html#pliers.converters.VideoToAudioConverter" title="pliers.converters.VideoToAudioConverter"><code class="xref py py-obj docutils literal"><span class="pre">VideoToAudioConverter</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/pliers.converters.VideoToAudioConverter.html#pliers.converters.VideoToAudioConverter" title="pliers.converters.VideoToAudioConverter"><code class="xref py py-obj docutils literal"><span class="pre">VideoToAudioConverter</span></code></a>([name])</td>
 <td>Convert a VideoStim to an AudioStim by extracting the audio track using moviepy.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/pliers.converters.VideoToComplexTextConverter.html#pliers.converters.VideoToComplexTextConverter" title="pliers.converters.VideoToComplexTextConverter"><code class="xref py py-obj docutils literal"><span class="pre">VideoToComplexTextConverter</span></code></a>([steps])</td>
@@ -515,7 +515,7 @@
 <tr class="row-odd"><td><a class="reference internal" href="generated/pliers.converters.VideoToTextConverter.html#pliers.converters.VideoToTextConverter" title="pliers.converters.VideoToTextConverter"><code class="xref py py-obj docutils literal"><span class="pre">VideoToTextConverter</span></code></a>([steps])</td>
 <td>Converts a VideoStim directly to a TextStim.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/pliers.converters.WitTranscriptionConverter.html#pliers.converters.WitTranscriptionConverter" title="pliers.converters.WitTranscriptionConverter"><code class="xref py py-obj docutils literal"><span class="pre">WitTranscriptionConverter</span></code></a>([api_key])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/pliers.converters.WitTranscriptionConverter.html#pliers.converters.WitTranscriptionConverter" title="pliers.converters.WitTranscriptionConverter"><code class="xref py py-obj docutils literal"><span class="pre">WitTranscriptionConverter</span></code></a>([api_key,&nbsp;rate_limit])</td>
 <td>Speech-to-text transcription via the Wit.ai API.</td>
 </tr>
 </tbody>
@@ -543,13 +543,13 @@
 <tr class="row-odd"><td><a class="reference internal" href="generated/pliers.filters.ImageCroppingFilter.html#pliers.filters.ImageCroppingFilter" title="pliers.filters.ImageCroppingFilter"><code class="xref py py-obj docutils literal"><span class="pre">ImageCroppingFilter</span></code></a>([box])</td>
 <td>Crops an image.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/pliers.filters.LowerCasingFilter.html#pliers.filters.LowerCasingFilter" title="pliers.filters.LowerCasingFilter"><code class="xref py py-obj docutils literal"><span class="pre">LowerCasingFilter</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/pliers.filters.LowerCasingFilter.html#pliers.filters.LowerCasingFilter" title="pliers.filters.LowerCasingFilter"><code class="xref py py-obj docutils literal"><span class="pre">LowerCasingFilter</span></code></a>([name])</td>
 <td>Lower cases the text in a TextStim.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/pliers.filters.PillowImageFilter.html#pliers.filters.PillowImageFilter" title="pliers.filters.PillowImageFilter"><code class="xref py py-obj docutils literal"><span class="pre">PillowImageFilter</span></code></a>([image_filter])</td>
 <td>Uses the ImageFilter module from PIL to run a pre-defined image enhancement filter on an ImageStim.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/pliers.filters.PunctuationRemovalFilter.html#pliers.filters.PunctuationRemovalFilter" title="pliers.filters.PunctuationRemovalFilter"><code class="xref py py-obj docutils literal"><span class="pre">PunctuationRemovalFilter</span></code></a>([tokens])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/pliers.filters.PunctuationRemovalFilter.html#pliers.filters.PunctuationRemovalFilter" title="pliers.filters.PunctuationRemovalFilter"><code class="xref py py-obj docutils literal"><span class="pre">PunctuationRemovalFilter</span></code></a>([name])</td>
 <td>Removes punctuation from a TextStim.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/pliers.filters.TemporalTrimmingFilter.html#pliers.filters.TemporalTrimmingFilter" title="pliers.filters.TemporalTrimmingFilter"><code class="xref py py-obj docutils literal"><span class="pre">TemporalTrimmingFilter</span></code></a>([start,&nbsp;end,&nbsp;frames,&nbsp;…])</td>
@@ -621,7 +621,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

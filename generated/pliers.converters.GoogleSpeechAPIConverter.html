@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pliers.converters.GoogleSpeechAPIConverter &mdash; pliers 0.2 documentation</title>
+  <title>pliers.converters.GoogleSpeechAPIConverter &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="../index.html"/> 
+    <link rel="top" title="pliers 0.3.0 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -166,28 +166,38 @@
 <h1>pliers.converters.GoogleSpeechAPIConverter<a class="headerlink" href="#pliers-converters-googlespeechapiconverter" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="pliers.converters.GoogleSpeechAPIConverter">
-<em class="property">class </em><code class="descclassname">pliers.converters.</code><code class="descname">GoogleSpeechAPIConverter</code><span class="sig-paren">(</span><em>language_code='en-US'</em>, <em>profanity_filter=False</em>, <em>speech_contexts=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/converters/google.html#GoogleSpeechAPIConverter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.converters.GoogleSpeechAPIConverter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">pliers.transformers.google.GoogleAPITransformer</span></code>, <code class="xref py py-class docutils literal"><span class="pre">pliers.converters.audio.AudioToTextConverter</span></code></p>
+<em class="property">class </em><code class="descclassname">pliers.converters.</code><code class="descname">GoogleSpeechAPIConverter</code><span class="sig-paren">(</span><em>language_code='en-US'</em>, <em>profanity_filter=False</em>, <em>speech_contexts=None</em>, <em>discovery_file=None</em>, <em>api_version='v1'</em>, <em>max_results=100</em>, <em>num_retries=3</em>, <em>rate_limit=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/converters/api/google.html#GoogleSpeechAPIConverter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.converters.GoogleSpeechAPIConverter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">pliers.transformers.api.google.GoogleAPITransformer</span></code>, <code class="xref py py-class docutils literal"><span class="pre">pliers.converters.audio.AudioToTextConverter</span></code></p>
 <p>Uses the Google Speech API to do speech-to-text transcription.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>language_code</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – The language of the supplied AudioStim.</li>
-<li><strong>profanity_filter</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – If set to True, will ask Google to try and
-filter out profanity from the resulting Text.</li>
-<li><strong>speech_contexts</strong> (<em>list</em>) – A list of a list of favored phrases or words
-to assist the API. The inner list is a sequence of word tokens,
-each outer element is a potential context.</li>
+<blockquote>
+<div><dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first">language_code (str): The language of the supplied AudioStim.
+profanity_filter (bool): If set to True, will ask Google to try and</p>
+<blockquote>
+<div>filter out profanity from the resulting Text.</div></blockquote>
+<p class="last">speech_contexts (list): A list of favored phrases or words</p>
+</dd>
+</dl>
+</div></blockquote>
+<ul class="simple">
+<li>to assist the API.</li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+<blockquote>
+<div><dl class="docutils">
+<dt>discovery_file (str): path to discovery file containing Google</dt>
+<dd>application credentials.</dd>
+</dl>
+<p>api_version (str): API version to use.
+max_results (int): Max number of results per page.
+num_retries (int): Number of times to retry query on failure.
+rate_limit (int): The minimum number of seconds required between</p>
+<blockquote>
+<div>transform calls on this Transformer.</div></blockquote>
+</div></blockquote>
 <dl class="method">
 <dt id="pliers.converters.GoogleSpeechAPIConverter.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>language_code='en-US'</em>, <em>profanity_filter=False</em>, <em>speech_contexts=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/converters/google.html#GoogleSpeechAPIConverter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.converters.GoogleSpeechAPIConverter.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>language_code='en-US'</em>, <em>profanity_filter=False</em>, <em>speech_contexts=None</em>, <em>discovery_file=None</em>, <em>api_version='v1'</em>, <em>max_results=100</em>, <em>num_retries=3</em>, <em>rate_limit=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/converters/api/google.html#GoogleSpeechAPIConverter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.converters.GoogleSpeechAPIConverter.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -199,7 +209,7 @@ each outer element is a potential context.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>stims</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>, </em><em>Stim</em><em>, </em><em>list</em>) – <p>One or more stimuli to process. Must be
+<li><strong>stims</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>Stim</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – <p>One or more stimuli to process. Must be
 one of:</p>
 <blockquote>
 <div><ul>
@@ -211,7 +221,7 @@ string or a Stim.</li>
 </ul>
 </div></blockquote>
 </li>
-<li><strong>validation</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – <p>String specifying how validation errors should
+<li><strong>validation</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – <p>String specifying how validation errors should
 be handled. Must be one of:</p>
 <blockquote>
 <div><ul>
@@ -271,7 +281,7 @@ _transform call.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

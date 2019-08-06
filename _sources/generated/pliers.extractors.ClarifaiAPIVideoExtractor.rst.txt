@@ -1,0 +1,11 @@
+pliers.extractors.ClarifaiAPIVideoExtractor
+===========================================
+
+.. currentmodule:: pliers.extractors
+
+.. autoclass:: ClarifaiAPIVideoExtractor
+	:members:
+	:inherited-members:
+	:show-inheritance:
+
+	.. automethod:: __init__

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pliers.stimuli.VideoFrameStim &mdash; pliers 0.2 documentation</title>
+  <title>pliers.stimuli.VideoFrameStim &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="../index.html"/> 
+    <link rel="top" title="pliers 0.3.0 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -166,7 +166,7 @@
 <h1>pliers.stimuli.VideoFrameStim<a class="headerlink" href="#pliers-stimuli-videoframestim" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="pliers.stimuli.VideoFrameStim">
-<em class="property">class </em><code class="descclassname">pliers.stimuli.</code><code class="descname">VideoFrameStim</code><span class="sig-paren">(</span><em>video</em>, <em>frame_num</em>, <em>duration=None</em>, <em>filename=None</em>, <em>data=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/stimuli/video.html#VideoFrameStim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.stimuli.VideoFrameStim" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pliers.stimuli.</code><code class="descname">VideoFrameStim</code><span class="sig-paren">(</span><em>video</em>, <em>frame_num</em>, <em>duration=None</em>, <em>data=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/stimuli/video.html#VideoFrameStim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.stimuli.VideoFrameStim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">pliers.stimuli.image.ImageStim</span></code></p>
 <p>A single frame of video.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -175,9 +175,9 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>video</strong> (<a class="reference internal" href="pliers.stimuli.VideoStim.html#pliers.stimuli.VideoStim" title="pliers.stimuli.VideoStim"><em>VideoStim</em></a>) – The source VideoStim the frame is drawn from.</li>
-<li><strong>frame_num</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – The index of the current frame in the source video.</li>
-<li><strong>duration</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Optional duration of presentation, in seconds.</li>
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Path to input video file, if one exists.</li>
+<li><strong>frame_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The index of the current frame in the source video.</li>
+<li><strong>duration</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Optional duration of presentation, in seconds.</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Path to input video file, if one exists.</li>
 <li><strong>data</strong> (<em>ndarray</em>) – Optional numpy array to initialize the image from.</li>
 </ul>
 </td>
@@ -186,8 +186,23 @@
 </table>
 <dl class="method">
 <dt id="pliers.stimuli.VideoFrameStim.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>video</em>, <em>frame_num</em>, <em>duration=None</em>, <em>filename=None</em>, <em>data=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/stimuli/video.html#VideoFrameStim.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.stimuli.VideoFrameStim.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>video</em>, <em>frame_num</em>, <em>duration=None</em>, <em>data=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/stimuli/video.html#VideoFrameStim.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.stimuli.VideoFrameStim.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="pliers.stimuli.VideoFrameStim.get_bytestring">
+<code class="descname">get_bytestring</code><span class="sig-paren">(</span><em>encoding='utf-8'</em><span class="sig-paren">)</span><a class="headerlink" href="#pliers.stimuli.VideoFrameStim.get_bytestring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the image data as a bytestring.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>encoding</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Encoding to use. Defaults to utf-8.</td>
+</tr>
+</tbody>
+</table>
+<p>Returns: A string.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="pliers.stimuli.VideoFrameStim.get_filename">
@@ -240,7 +255,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pliers.extractors.ExtractorResult &mdash; pliers 0.2 documentation</title>
+  <title>pliers.extractors.ExtractorResult &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="../index.html"/>
+    <link rel="top" title="pliers 0.3.0 documentation" href="../index.html"/>
         <link rel="up" title="Pliers API Reference" href="../reference.html"/>
         <link rel="next" title="pliers.extractors.merge_results" href="pliers.extractors.merge_results.html"/>
         <link rel="prev" title="pliers.extractors.Extractor" href="pliers.extractors.Extractor.html"/> 
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -186,25 +186,26 @@
 <h1>pliers.extractors.ExtractorResult<a class="headerlink" href="#pliers-extractors-extractorresult" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="pliers.extractors.ExtractorResult">
-<em class="property">class </em><code class="descclassname">pliers.extractors.</code><code class="descname">ExtractorResult</code><span class="sig-paren">(</span><em>data</em>, <em>stim</em>, <em>extractor</em>, <em>features=None</em>, <em>onsets=None</em>, <em>durations=None</em>, <em>orders=None</em>, <em>raw=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/extractors/base.html#ExtractorResult"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.extractors.ExtractorResult" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<em class="property">class </em><code class="descclassname">pliers.extractors.</code><code class="descname">ExtractorResult</code><span class="sig-paren">(</span><em>data</em>, <em>stim</em>, <em>extractor</em>, <em>features=None</em>, <em>onsets=None</em>, <em>durations=None</em>, <em>orders=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/extractors/base.html#ExtractorResult"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.extractors.ExtractorResult" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Stores feature data produced by an Extractor.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data</strong> (<em>ndarray</em><em>, </em><em>iterable</em>) – Extracted feature values. Either an ndarray
-or an iterable. Can be either 1-d or 2-d.</li>
+<li><strong>data</strong> (<em>ndarray</em><em>, </em><em>iterable</em>) – Extracted feature data. Either an ndarray
+(1-d or 2-d), an iterable, or a raw result. If a raw result is
+passed, the source Extractor must implement _to_df().</li>
 <li><strong>stim</strong> (<em>Stim</em>) – The input Stim object from which features were extracted.</li>
 <li><strong>extractor</strong> (<a class="reference internal" href="pliers.extractors.Extractor.html#pliers.extractors.Extractor" title="pliers.extractors.Extractor"><em>Extractor</em></a>) – The Extractor object used in extraction.</li>
-<li><strong>features</strong> (<em>list</em><em>, </em><em>ndarray</em>) – Optional names of extracted features. If
+<li><strong>features</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em>, </em><em>ndarray</em>) – Optional names of extracted features. If
 passed, must have as many elements as there are columns in data.</li>
-<li><strong>onsets</strong> (<em>list</em><em>, </em><em>ndarray</em>) – Optional iterable giving the onsets of the
+<li><strong>onsets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em>, </em><em>ndarray</em>) – Optional iterable giving the onsets of the
 rows in data. Length must match the input data.</li>
-<li><strong>durations</strong> (<em>list</em><em>, </em><em>ndarray</em>) – Optional iterable giving the durations
+<li><strong>durations</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em>, </em><em>ndarray</em>) – Optional iterable giving the durations
 associated with the rows in data.</li>
-<li><strong>orders</strong> (<em>list</em><em>, </em><em>ndarray</em>) – Optional iterable giving the integer orders
+<li><strong>orders</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em>, </em><em>ndarray</em>) – Optional iterable giving the integer orders
 associated with the rows in data.</li>
 <li><strong>raw</strong> – The raw result (net of any containers or overhead) returned by
 the underlying feature extraction tool. Can be an object of any
@@ -216,8 +217,14 @@ type.</li>
 </table>
 <dl class="method">
 <dt id="pliers.extractors.ExtractorResult.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>data</em>, <em>stim</em>, <em>extractor</em>, <em>features=None</em>, <em>onsets=None</em>, <em>durations=None</em>, <em>orders=None</em>, <em>raw=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/extractors/base.html#ExtractorResult.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.extractors.ExtractorResult.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>data</em>, <em>stim</em>, <em>extractor</em>, <em>features=None</em>, <em>onsets=None</em>, <em>durations=None</em>, <em>orders=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/extractors/base.html#ExtractorResult.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.extractors.ExtractorResult.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pliers.extractors.ExtractorResult.data">
+<code class="descname">data</code><a class="headerlink" href="#pliers.extractors.ExtractorResult.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a DataFrame with default arguments</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="pliers.extractors.ExtractorResult.history">
@@ -225,30 +232,37 @@ type.</li>
 <dd><p>Returns the transformation history for the input Stim.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="pliers.extractors.ExtractorResult.raw">
+<code class="descname">raw</code><a class="headerlink" href="#pliers.extractors.ExtractorResult.raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores raw result of extraction, prior to postprocessing done
+in to_df().</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="pliers.extractors.ExtractorResult.to_df">
-<code class="descname">to_df</code><span class="sig-paren">(</span><em>timing=True</em>, <em>metadata=False</em>, <em>format='wide'</em>, <em>extractor_name=False</em>, <em>object_id=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/extractors/base.html#ExtractorResult.to_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.extractors.ExtractorResult.to_df" title="Permalink to this definition">¶</a></dt>
+<code class="descname">to_df</code><span class="sig-paren">(</span><em>timing=True</em>, <em>metadata=False</em>, <em>format='wide'</em>, <em>extractor_name=False</em>, <em>object_id=True</em>, <em>**to_df_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/extractors/base.html#ExtractorResult.to_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.extractors.ExtractorResult.to_df" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert current instance to a pandas DatasFrame.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>timing</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – If True, adds columns for event onset and duration.
+<li><strong>timing</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – If True, adds columns for event onset and duration.
 Note that these columns will be added even if there are no
 valid values in the current object (NaNs will be inserted).
 If ‘auto’, timing columns are only inserted if there’s at least
 one valid (i.e., non-NaN) onset/order/duration.</li>
-<li><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – If True, adds columns for key metadata (including
+<li><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – If True, adds columns for key metadata (including
 the name, filename, class, history, and source file of the
 Stim).</li>
-<li><strong>format</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Format to return the data in. Can be either ‘wide’ or
+<li><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Format to return the data in. Can be either ‘wide’ or
 ‘long’. In the wide case, every extracted feature is a column,
 and every result object is in a row. In the long case, every
 row contains a single record/feature combination.</li>
-<li><strong>extractor_name</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – If True, includes the Extractor name as
+<li><strong>extractor_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – If True, includes the Extractor name as
 a column (in ‘long’ format) or index level (in ‘wide’ format).</li>
-<li><strong>object_id</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – If True, attempts to intelligently add an
+<li><strong>object_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – If True, attempts to intelligently add an
 ‘object_id’ column that differentiates between multiple objects
 in the results that may share onsets and durations (and would
 otherwise be impossible to distinguish). This frequently occurs
@@ -315,7 +329,7 @@ constant would be non-constant.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

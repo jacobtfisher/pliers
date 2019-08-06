@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pliers.extractors.base &mdash; pliers 0.2 documentation</title>
+  <title>pliers.extractors.base &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="../../../index.html"/>
+    <link rel="top" title="pliers 0.3.0 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -179,9 +179,6 @@
 
     <span class="sd">&#39;&#39;&#39; Base class for all pliers Extractors.&#39;&#39;&#39;</span>
 
-<div class="viewcode-block" id="Extractor.__init__"><a class="viewcode-back" href="../../../generated/pliers.extractors.Extractor.html#pliers.extractors.Extractor.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Extractor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
-
     <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stim</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Extractor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">stim</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="k">if</span> <span class="n">isgenerator</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="k">else</span> <span class="n">result</span>
@@ -203,8 +200,9 @@
     <span class="sd">&#39;&#39;&#39; Stores feature data produced by an Extractor.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        data (ndarray, iterable): Extracted feature values. Either an ndarray</span>
-<span class="sd">            or an iterable. Can be either 1-d or 2-d.</span>
+<span class="sd">        data (ndarray, iterable): Extracted feature data. Either an ndarray</span>
+<span class="sd">            (1-d or 2-d), an iterable, or a raw result. If a raw result is</span>
+<span class="sd">            passed, the source Extractor must implement _to_df().</span>
 <span class="sd">        stim (Stim): The input Stim object from which features were extracted.</span>
 <span class="sd">        extractor (Extractor): The Extractor object used in extraction.</span>
 <span class="sd">        features (list, ndarray): Optional names of extracted features. If</span>
@@ -221,41 +219,29 @@
 <span class="sd">    &#39;&#39;&#39;</span>
 
 <div class="viewcode-block" id="ExtractorResult.__init__"><a class="viewcode-back" href="../../../generated/pliers.extractors.ExtractorResult.html#pliers.extractors.ExtractorResult.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">stim</span><span class="p">,</span> <span class="n">extractor</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">onsets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">durations</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orders</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-
-        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">raw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;At least one of &#39;data&#39; and &#39;raw&#39; must be a &quot;</span>
-                             <span class="s2">&quot;value other than None.&quot;</span><span class="p">)</span>
-
+                 <span class="n">durations</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orders</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stim</span> <span class="o">=</span> <span class="n">stim</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span> <span class="o">=</span> <span class="n">extractor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">features</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="n">raw</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_history</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">onset</span> <span class="o">=</span> <span class="n">onsets</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">duration</span> <span class="o">=</span> <span class="n">durations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">orders</span></div>
 
-        <span class="c1"># Eventually, the goal is to make raw mandatory, and always</span>
-        <span class="c1"># generate the .data property via calls to to_array() or to_df()</span>
-        <span class="c1"># implemented in the Extractor. But to avoid breaking the API without</span>
-        <span class="c1"># warning, we provide a backward-compatible version for the time being.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extractor</span><span class="p">,</span> <span class="s1">&#39;_to_array&#39;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span><span class="o">.</span><span class="n">_to_array</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">raw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Stores raw result of extraction, prior to postprocessing done</span>
+<span class="sd">        in to_df(). &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extractor</span><span class="p">,</span> <span class="s1">&#39;_to_df&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
 
-        <span class="k">if</span> <span class="n">onsets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">onsets</span> <span class="o">=</span> <span class="n">stim</span><span class="o">.</span><span class="n">onset</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">onsets</span> <span class="o">=</span> <span class="n">onsets</span> <span class="k">if</span> <span class="n">onsets</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-
-        <span class="k">if</span> <span class="n">durations</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">durations</span> <span class="o">=</span> <span class="n">stim</span><span class="o">.</span><span class="n">duration</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">durations</span> <span class="o">=</span> <span class="n">durations</span> <span class="k">if</span> <span class="n">durations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-
-        <span class="k">if</span> <span class="n">orders</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">orders</span> <span class="o">=</span> <span class="n">stim</span><span class="o">.</span><span class="n">order</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">orders</span> <span class="o">=</span> <span class="n">orders</span> <span class="k">if</span> <span class="n">orders</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span></div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Creates a DataFrame with default arguments &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span>
 
 <div class="viewcode-block" id="ExtractorResult.to_df"><a class="viewcode-back" href="../../../generated/pliers.extractors.ExtractorResult.html#pliers.extractors.ExtractorResult.to_df">[docs]</a>    <span class="k">def</span> <span class="nf">to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;wide&#39;</span><span class="p">,</span>
-              <span class="n">extractor_name</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">object_id</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+              <span class="n">extractor_name</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">object_id</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">to_df_kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; Convert current instance to a pandas DatasFrame.</span>
 
 <span class="sd">        Args:</span>
@@ -289,15 +275,31 @@
 
         <span class="c1"># Ideally, Extractors should implement their own _to_df() class method</span>
         <span class="c1"># that produces a DataFrame in standardized format. Failing that, we</span>
-        <span class="c1"># assume self.data is already array-like and can be wrapped in a DF.</span>
+        <span class="c1"># assume self._data is already array-like and can be wrapped in a DF.</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extractor</span><span class="p">,</span> <span class="s1">&#39;_to_df&#39;</span><span class="p">):</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span><span class="o">.</span><span class="n">_to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span><span class="o">.</span><span class="n">_to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">to_df_kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">features</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;feature_</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-                            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">features</span><span class="p">)</span>
+                            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">features</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_onsets&#39;</span><span class="p">):</span>
+            <span class="n">onsets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_onsets</span><span class="p">)</span>
+            <span class="n">onsets</span> <span class="o">+=</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">onset</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">onset</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">onsets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">onset</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">onset</span>
+        <span class="n">durations</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_durations&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">duration</span><span class="p">)</span>
+        <span class="n">durations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="k">if</span> <span class="n">durations</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">durations</span>
+        <span class="n">orders</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_orders&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
+        <span class="n">orders</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="k">if</span> <span class="n">orders</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">orders</span>
+
+        <span class="c1"># If any features clash with protected keys, append underscore</span>
+        <span class="n">protected</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;onset&#39;</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">,</span> <span class="s1">&#39;duration&#39;</span><span class="p">,</span> <span class="s1">&#39;extractor&#39;</span><span class="p">,</span> <span class="s1">&#39;stim_name&#39;</span><span class="p">,</span> \
+                     <span class="s1">&#39;class&#39;</span><span class="p">,</span> <span class="s1">&#39;filename&#39;</span><span class="p">,</span> <span class="s1">&#39;history&#39;</span><span class="p">,</span> <span class="s1">&#39;source_file&#39;</span><span class="p">]</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">k</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">protected</span><span class="p">})</span>
 
         <span class="n">index_cols</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -308,25 +310,27 @@
         <span class="c1"># counter for any row in the DF that cannot be uniquely distinguished</span>
         <span class="c1"># from other rows by onset and duration.</span>
         <span class="k">if</span> <span class="n">object_id</span> <span class="ow">and</span> <span class="s1">&#39;object_id&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onsets</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> \
-                <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">durations</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">onsets</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> \
+                <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">durations</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">object_id</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">or</span> <span class="p">(</span><span class="n">object_id</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span> <span class="ow">and</span>
-                                     <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">index</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+                                     <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">index</span><span class="p">))</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)):</span>
                 <span class="n">ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> \
                     <span class="k">else</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">cumcount</span><span class="p">()</span>
                 <span class="n">df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;object_id&#39;</span><span class="p">,</span> <span class="n">ids</span><span class="p">)</span>
                 <span class="n">index_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;object_id&#39;</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">timing</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">or</span> <span class="p">(</span><span class="n">timing</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span> <span class="ow">and</span>
-                              <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">durations</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">or</span>
-                               <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">orders</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">())):</span>
-            <span class="n">df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;duration&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">durations</span><span class="p">)</span>
-            <span class="n">df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">orders</span><span class="p">)</span>
-            <span class="n">df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;onset&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onsets</span><span class="p">)</span>
+                              <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">durations</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">or</span>
+                               <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">orders</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">())):</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;onset&#39;</span><span class="p">,</span> <span class="n">onsets</span><span class="p">)</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;duration&#39;</span><span class="p">,</span> <span class="n">durations</span><span class="p">)</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">,</span> <span class="n">orders</span><span class="p">)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;onset&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">index_cols</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;onset&#39;</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">,</span> <span class="s1">&#39;duration&#39;</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s1">&#39;long&#39;</span><span class="p">:</span>
             <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span><span class="n">index_cols</span><span class="p">,</span> <span class="n">var_name</span><span class="o">=</span><span class="s1">&#39;feature&#39;</span><span class="p">)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">extractor_name</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span><span class="o">.</span><span class="n">name</span>
@@ -356,7 +360,7 @@
 
 <div class="viewcode-block" id="merge_results"><a class="viewcode-back" href="../../../generated/pliers.extractors.merge_results.html#pliers.extractors.merge_results">[docs]</a><span class="k">def</span> <span class="nf">merge_results</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;wide&#39;</span><span class="p">,</span> <span class="n">timing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                   <span class="n">extractor_names</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">object_id</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                  <span class="n">invalid_results</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+                  <span class="n">invalid_results</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">to_df_kwargs</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39; Merges a list of ExtractorResults instances and returns a pandas DF.</span>
 
 <span class="sd">    Args:</span>
@@ -432,7 +436,7 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">ExtractorResult</span><span class="p">):</span>
             <span class="n">dfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">to_df</span><span class="p">(</span><span class="n">timing</span><span class="o">=</span><span class="n">_timing</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span>
                                <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;long&#39;</span><span class="p">,</span> <span class="n">extractor_name</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                               <span class="n">object_id</span><span class="o">=</span><span class="n">_object_id</span><span class="p">))</span>
+                               <span class="n">object_id</span><span class="o">=</span><span class="n">_object_id</span><span class="p">,</span> <span class="o">**</span><span class="n">to_df_kwargs</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">invalid_results</span> <span class="o">==</span> <span class="s1">&#39;fail&#39;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;At least one of the provided results was not an&quot;</span>
                              <span class="s2">&quot;ExtractorResult. Set the invalid_results&quot;</span>
@@ -528,7 +532,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

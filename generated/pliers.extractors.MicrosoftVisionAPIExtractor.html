@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pliers.extractors.MicrosoftVisionAPIExtractor &mdash; pliers 0.2 documentation</title>
+  <title>pliers.extractors.MicrosoftVisionAPIExtractor &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="../index.html"/> 
+    <link rel="top" title="pliers 0.3.0 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -166,24 +166,37 @@
 <h1>pliers.extractors.MicrosoftVisionAPIExtractor<a class="headerlink" href="#pliers-extractors-microsoftvisionapiextractor" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="pliers.extractors.MicrosoftVisionAPIExtractor">
-<em class="property">class </em><code class="descclassname">pliers.extractors.</code><code class="descname">MicrosoftVisionAPIExtractor</code><span class="sig-paren">(</span><em>features=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/extractors/microsoft.html#MicrosoftVisionAPIExtractor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.extractors.MicrosoftVisionAPIExtractor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">pliers.transformers.microsoft.MicrosoftVisionAPITransformer</span></code>, <code class="xref py py-class docutils literal"><span class="pre">pliers.extractors.image.ImageExtractor</span></code></p>
+<em class="property">class </em><code class="descclassname">pliers.extractors.</code><code class="descname">MicrosoftVisionAPIExtractor</code><span class="sig-paren">(</span><em>features=None</em>, <em>subscription_key=None</em>, <em>location=None</em>, <em>api_version='v1.0'</em>, <em>rate_limit=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/extractors/api/microsoft.html#MicrosoftVisionAPIExtractor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.extractors.MicrosoftVisionAPIExtractor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">pliers.transformers.api.microsoft.MicrosoftVisionAPITransformer</span></code>, <code class="xref py py-class docutils literal"><span class="pre">pliers.extractors.image.ImageExtractor</span></code></p>
 <p>Base MicrosoftVisionAPIExtractor class.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>features</strong> (<em>list</em>) – one or more specified vision features as strings.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>features</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – One or more specified vision features as strings.
 Supported vision features include Tags, Categories, ImageType,
 Color, and Adult. Note that each attribute has additional
 computational and time cost. By default extracts all visual
-features from an image.</td>
+features from an image.</li>
+<li><strong>subscription_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – A valid subscription key for Microsoft Cognitive
+Services. Only needs to be passed the first time the extractor is
+initialized.</li>
+<li><strong>location</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Region the subscription key has been registered in.
+It will be the first part of the endpoint URL suggested by
+Microsoft when you first created the key.
+Examples include: westus, westcentralus, eastus</li>
+<li><strong>api_version</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – API version to use.</li>
+<li><strong>rate_limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The minimum number of seconds required between
+transform calls on this Transformer.</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="pliers.extractors.MicrosoftVisionAPIExtractor.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>features=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/extractors/microsoft.html#MicrosoftVisionAPIExtractor.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.extractors.MicrosoftVisionAPIExtractor.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>features=None</em>, <em>subscription_key=None</em>, <em>location=None</em>, <em>api_version='v1.0'</em>, <em>rate_limit=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pliers/extractors/api/microsoft.html#MicrosoftVisionAPIExtractor.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pliers.extractors.MicrosoftVisionAPIExtractor.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -225,7 +238,7 @@ features from an image.</td>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

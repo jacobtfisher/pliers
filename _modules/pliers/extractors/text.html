@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pliers.extractors.text &mdash; pliers 0.2 documentation</title>
+  <title>pliers.extractors.text &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="../../../index.html"/>
+    <link rel="top" title="pliers 0.3.0 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -167,6 +167,7 @@
 <span></span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Extractors that operate primarily or exclusively on Text stimuli.</span>
 <span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="kn">from</span> <span class="nn">pliers.stimuli.text</span> <span class="k">import</span> <span class="n">TextStim</span><span class="p">,</span> <span class="n">ComplexTextStim</span>
 <span class="kn">from</span> <span class="nn">pliers.extractors.base</span> <span class="k">import</span> <span class="n">Extractor</span><span class="p">,</span> <span class="n">ExtractorResult</span>
@@ -179,13 +180,17 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">nltk</span>
 <span class="kn">from</span> <span class="nn">nltk.sentiment.vader</span> <span class="k">import</span> <span class="n">SentimentIntensityAnalyzer</span>
-<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">string_types</span>
+
 
 <span class="n">keyedvectors</span> <span class="o">=</span> <span class="n">attempt_to_import</span><span class="p">(</span><span class="s1">&#39;gensim.models.keyedvectors&#39;</span><span class="p">,</span> <span class="s1">&#39;keyedvectors&#39;</span><span class="p">,</span>
                                  <span class="p">[</span><span class="s1">&#39;KeyedVectors&#39;</span><span class="p">])</span>
 <span class="n">sklearn_text</span> <span class="o">=</span> <span class="n">attempt_to_import</span><span class="p">(</span><span class="s1">&#39;sklearn.feature_extraction.text&#39;</span><span class="p">,</span> <span class="s1">&#39;sklearn_text&#39;</span><span class="p">,</span>
                                  <span class="p">[</span><span class="s1">&#39;VectorizerMixin&#39;</span><span class="p">,</span> <span class="s1">&#39;CountVectorizer&#39;</span><span class="p">])</span>
+<span class="n">spacy</span> <span class="o">=</span> <span class="n">attempt_to_import</span><span class="p">(</span><span class="s1">&#39;spacy&#39;</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">TextExtractor</span><span class="p">(</span><span class="n">Extractor</span><span class="p">):</span>
@@ -276,12 +281,16 @@
 <span class="sd">            a dictionary (defaults to numpy&#39;s NaN).</span>
 <span class="sd">        case_sensitive (bool): If True, entries in the dictionary are treated</span>
 <span class="sd">            as case-sensitive (e.g., &#39;John&#39; and &#39;john&#39; are different words).</span>
+<span class="sd">        force_retrieve (bool): If True, the source dictionary will always be</span>
+<span class="sd">            retrieved/download, even if it exists locally. If False, a cached</span>
+<span class="sd">            local version will be used if it exists.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="n">_log_attributes</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;variables&#39;</span><span class="p">,</span> <span class="s1">&#39;missing&#39;</span><span class="p">,</span> <span class="s1">&#39;case_sensitive&#39;</span><span class="p">)</span>
     <span class="n">VERSION</span> <span class="o">=</span> <span class="s1">&#39;1.0&#39;</span>
 
-<div class="viewcode-block" id="PredefinedDictionaryExtractor.__init__"><a class="viewcode-back" href="../../../generated/pliers.extractors.PredefinedDictionaryExtractor.html#pliers.extractors.PredefinedDictionaryExtractor.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">missing</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">case_sensitive</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="PredefinedDictionaryExtractor.__init__"><a class="viewcode-back" href="../../../generated/pliers.extractors.PredefinedDictionaryExtractor.html#pliers.extractors.PredefinedDictionaryExtractor.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">missing</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">case_sensitive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">force_retrieve</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">case_sensitive</span> <span class="o">=</span> <span class="n">case_sensitive</span>
 
@@ -297,7 +306,7 @@
 
         <span class="n">dicts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">variables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">d</span> <span class="o">=</span> <span class="n">fetch_dictionary</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">fetch_dictionary</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">force_retrieve</span><span class="o">=</span><span class="n">force_retrieve</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">case_sensitive</span><span class="p">:</span>
                 <span class="n">d</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">v</span><span class="p">:</span>
@@ -305,7 +314,12 @@
             <span class="n">d</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
             <span class="n">dicts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
-        <span class="n">dictionary</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">dicts</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">join</span><span class="o">=</span><span class="s1">&#39;outer&#39;</span><span class="p">)</span>
+        <span class="c1"># Make sure none of the dictionaries have duplicate indices</span>
+        <span class="n">drop_dups</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="p">[</span><span class="o">~</span><span class="n">d</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">duplicated</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="s1">&#39;first&#39;</span><span class="p">)]</span>
+        <span class="n">dicts</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">is_unique</span> <span class="k">else</span> <span class="n">drop_dups</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dicts</span><span class="p">]</span>
+
+        <span class="n">dictionary</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">dicts</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">join</span><span class="o">=</span><span class="s1">&#39;outer&#39;</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
         <span class="nb">super</span><span class="p">(</span><span class="n">PredefinedDictionaryExtractor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">dictionary</span><span class="p">,</span> <span class="n">missing</span><span class="o">=</span><span class="n">missing</span><span class="p">)</span></div></div>
 
@@ -438,15 +452,16 @@
     <span class="n">_log_attributes</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;vectorizer&#39;</span><span class="p">,)</span>
     <span class="n">_batch_size</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span>
 
-<div class="viewcode-block" id="TextVectorizerExtractor.__init__"><a class="viewcode-back" href="../../../generated/pliers.extractors.TextVectorizerExtractor.html#pliers.extractors.TextVectorizerExtractor.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vectorizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="TextVectorizerExtractor.__init__"><a class="viewcode-back" href="../../../generated/pliers.extractors.TextVectorizerExtractor.html#pliers.extractors.TextVectorizerExtractor.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vectorizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">vectorizer_args</span><span class="p">,</span> <span class="o">**</span><span class="n">vectorizer_kwargs</span><span class="p">):</span>
         <span class="n">verify_dependencies</span><span class="p">([</span><span class="s1">&#39;sklearn_text&#39;</span><span class="p">])</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vectorizer</span><span class="p">,</span> <span class="n">sklearn_text</span><span class="o">.</span><span class="n">VectorizerMixin</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">vectorizer</span> <span class="o">=</span> <span class="n">vectorizer</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vectorizer</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">vec</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sklearn_text</span><span class="p">,</span> <span class="n">vectorizer</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">vectorizer</span> <span class="o">=</span> <span class="n">vec</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vectorizer</span> <span class="o">=</span> <span class="n">vec</span><span class="p">(</span><span class="o">*</span><span class="n">vectorizer_args</span><span class="p">,</span> <span class="o">**</span><span class="n">vectorizer_kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">vectorizer</span> <span class="o">=</span> <span class="n">sklearn_text</span><span class="o">.</span><span class="n">CountVectorizer</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vectorizer</span> <span class="o">=</span> <span class="n">sklearn_text</span><span class="o">.</span><span class="n">CountVectorizer</span><span class="p">(</span><span class="o">*</span><span class="n">vectorizer_args</span><span class="p">,</span>
+                                                           <span class="o">**</span><span class="n">vectorizer_kwargs</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">TextVectorizerExtractor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">_extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stims</span><span class="p">):</span>
@@ -478,6 +493,81 @@
         <span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sentiment_&#39;</span> <span class="o">+</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">scores</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
         <span class="k">return</span> <span class="n">ExtractorResult</span><span class="p">([</span><span class="nb">list</span><span class="p">(</span><span class="n">scores</span><span class="o">.</span><span class="n">values</span><span class="p">())],</span> <span class="n">stim</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span>
                                <span class="n">features</span><span class="o">=</span><span class="n">features</span><span class="p">)</span></div>
+
+
+
+<span class="k">class</span> <span class="nc">SpaCyExtractor</span><span class="p">(</span><span class="n">TextExtractor</span><span class="p">):</span>
+    
+    <span class="sd">&#39;&#39;&#39; A generic class for Spacy Text extractors </span>
+<span class="sd">    </span>
+<span class="sd">   </span>
+<span class="sd">    Uses SpaCy to extract features from text. Extracts features for every word</span>
+<span class="sd">    (token) in a sentence.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        extractor_type(str): The type of feature to extract. Must be one of</span>
+<span class="sd">            &#39;doc&#39; (analyze an entire sentence/document) or &#39;token&#39;</span>
+<span class="sd">            (analyze each word).</span>
+<span class="sd">        features(list): A list of strings giving the names of spaCy features to</span>
+<span class="sd">            extract. See SpacY documentation for details. By default, returns</span>
+<span class="sd">            all available features for the given extractor type.</span>
+<span class="sd">        model (str): The name of the language model to use.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extractor_type</span><span class="o">=</span><span class="s1">&#39;token&#39;</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">model</span><span class="o">=</span><span class="s1">&#39;en_core_web_sm&#39;</span><span class="p">):</span>
+
+        <span class="n">verify_dependencies</span><span class="p">([</span><span class="s1">&#39;spacy&#39;</span><span class="p">])</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Spacy Models (&#39;</span><span class="si">{}</span><span class="s2">&#39;) not found. Downloading and&quot;</span>
+                            <span class="s2">&quot;installing&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
+
+            <span class="n">spacy</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Loaded model: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extractor_type</span> <span class="o">=</span> <span class="n">extractor_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">SpaCyExtractor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        
+    <span class="k">def</span> <span class="nf">_extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stim</span><span class="p">):</span>
+   
+        <span class="n">features_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">elements</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">stim</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">order_list</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extractor_type</span> <span class="o">==</span> <span class="s1">&#39;token&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;lemma_&#39;</span><span class="p">,</span> <span class="s1">&#39;pos_&#39;</span><span class="p">,</span> <span class="s1">&#39;tag_&#39;</span><span class="p">,</span> <span class="s1">&#39;dep_&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;shape_&#39;</span><span class="p">,</span> <span class="s1">&#39;is_alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;is_stop&#39;</span><span class="p">,</span> <span class="s1">&#39;is_punct&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;sentiment&#39;</span><span class="p">,</span> <span class="s1">&#39;is_ascii&#39;</span><span class="p">,</span> <span class="s1">&#39;is_digit&#39;</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">extractor_type</span> <span class="o">==</span> <span class="s1">&#39;doc&#39;</span><span class="p">:</span>
+             <span class="n">elements</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span><span class="o">.</span><span class="n">as_doc</span><span class="p">()</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">elements</span><span class="o">.</span><span class="n">sents</span><span class="p">)]</span>
+             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;is_tagged&#39;</span><span class="p">,</span> <span class="s1">&#39;is_parsed&#39;</span><span class="p">,</span>
+                                  <span class="s1">&#39;is_sentenced&#39;</span><span class="p">,</span> <span class="s1">&#39;sentiment&#39;</span><span class="p">]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid extractor_type; must be one of &#39;token&#39;&quot;</span>
+                             <span class="s2">&quot; or &#39;doc&#39;.&quot;</span><span class="p">))</span>
+
+        <span class="n">features_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">:</span>
+            <span class="n">arr</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">feat</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
+                <span class="n">arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">feat</span><span class="p">))</span>
+            <span class="n">features_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+
+        <span class="n">order_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">ExtractorResult</span><span class="p">(</span><span class="n">features_list</span><span class="p">,</span> <span class="n">stim</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span>
+                               <span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">,</span> <span class="n">orders</span><span class="o">=</span><span class="n">order_list</span><span class="p">)</span>
 </pre></div>
 
            </div>
@@ -514,7 +604,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

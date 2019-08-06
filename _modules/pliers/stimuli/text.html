@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pliers.stimuli.text &mdash; pliers 0.2 documentation</title>
+  <title>pliers.stimuli.text &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="../../../index.html"/>
+    <link rel="top" title="pliers 0.3.0 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -171,7 +171,10 @@
 <span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">string_types</span>
 <span class="kn">from</span> <span class="nn">six.moves.urllib.request</span> <span class="k">import</span> <span class="n">urlopen</span>
 <span class="kn">from</span> <span class="nn">pliers.support.decorators</span> <span class="k">import</span> <span class="n">requires_nltk_corpus</span>
+<span class="kn">from</span> <span class="nn">pliers.utils</span> <span class="k">import</span> <span class="n">attempt_to_import</span><span class="p">,</span> <span class="n">verify_dependencies</span>
 <span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">Stim</span>
+
+<span class="n">pysrt</span> <span class="o">=</span> <span class="n">attempt_to_import</span><span class="p">(</span><span class="s1">&#39;pysrt&#39;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="TextStim"><a class="viewcode-back" href="../../../generated/pliers.stimuli.TextStim.html#pliers.stimuli.TextStim">[docs]</a><span class="k">class</span> <span class="nc">TextStim</span><span class="p">(</span><span class="n">Stim</span><span class="p">):</span>
@@ -201,7 +204,8 @@
             <span class="n">text</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
         <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;text[</span><span class="si">%s</span><span class="s1">]&#39;</span> <span class="o">%</span> <span class="n">text</span><span class="p">[:</span><span class="mi">40</span><span class="p">]</span>  <span class="c1"># Truncate at 40 chars</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">TextStim</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">onset</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TextStim</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">onset</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span>
+                                       <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -274,7 +278,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;srt&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;srt&#39;</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_from_srt</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_from_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">default_duration</span><span class="p">)</span>
@@ -287,7 +291,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">elements</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">default_duration</span><span class="p">):</span>
         <span class="n">tod_names</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;t&#39;</span><span class="p">:</span> <span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">:</span> <span class="s1">&#39;onset&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="s1">&#39;duration&#39;</span><span class="p">}</span>
@@ -308,18 +312,30 @@
                 <span class="k">if</span> <span class="n">duration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">duration</span> <span class="o">=</span> <span class="n">default_duration</span>
                 <span class="n">elem</span> <span class="o">=</span> <span class="n">TextStim</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;onset&#39;</span><span class="p">],</span> <span class="n">duration</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_elem</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;onset</span><span class="se">\t</span><span class="s1">text</span><span class="se">\t</span><span class="s1">duration</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;srt&#39;</span><span class="p">):</span>
+            <span class="n">verify_dependencies</span><span class="p">([</span><span class="s1">&#39;pysrt&#39;</span><span class="p">])</span>
+            <span class="kn">from</span> <span class="nn">pysrt</span> <span class="k">import</span> <span class="n">SubRipFile</span><span class="p">,</span> <span class="n">SubRipItem</span>
+            <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">time</span>
+
+            <span class="n">out</span> <span class="o">=</span> <span class="n">SubRipFile</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span><span class="p">:</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="se">\t</span><span class="si">{}</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">onset</span><span class="p">,</span>
-                                              <span class="n">elem</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
-                                              <span class="n">elem</span><span class="o">.</span><span class="n">duration</span><span class="p">))</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_to_tup</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">onset</span><span class="p">))</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_to_tup</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">onset</span> <span class="o">+</span> <span class="n">elem</span><span class="o">.</span><span class="n">duration</span><span class="p">))</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SubRipItem</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">elem</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;onset</span><span class="se">\t</span><span class="s1">text</span><span class="se">\t</span><span class="s1">duration</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="se">\t</span><span class="si">{}</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">onset</span><span class="p">,</span>
+                                                  <span class="n">elem</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                                                  <span class="n">elem</span><span class="o">.</span><span class="n">duration</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_from_srt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="kn">import</span> <span class="nn">pysrt</span>
+        <span class="n">verify_dependencies</span><span class="p">([</span><span class="s1">&#39;pysrt&#39;</span><span class="p">])</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="n">pysrt</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         <span class="n">list_</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
@@ -339,17 +355,25 @@
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
             <span class="n">elem</span> <span class="o">=</span> <span class="n">TextStim</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">],</span> <span class="n">onset</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;onset&#39;</span><span class="p">],</span>
                             <span class="n">duration</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_elem</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">add_elem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elem</span><span class="p">):</span>
-        <span class="n">offset</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">onset</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">onset</span>
-        <span class="n">elem</span><span class="o">.</span><span class="n">onset</span> <span class="o">=</span> <span class="n">offset</span> <span class="k">if</span> <span class="n">elem</span><span class="o">.</span><span class="n">onset</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">elem</span><span class="o">.</span><span class="n">onset</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Iterate text elements. &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span><span class="p">:</span>
-            <span class="k">yield</span> <span class="n">elem</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">onset</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">onset</span>
+            <span class="c1"># Calculate element onset relative to this stimulus</span>
+            <span class="n">rel_onset</span> <span class="o">=</span> <span class="n">offset</span> <span class="k">if</span> <span class="n">elem</span><span class="o">.</span><span class="n">onset</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">elem</span><span class="o">.</span><span class="n">onset</span>
+            <span class="k">yield</span> <span class="n">TextStim</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">elem</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">rel_onset</span><span class="p">,</span> <span class="n">elem</span><span class="o">.</span><span class="n">duration</span><span class="p">,</span>
+                           <span class="n">elem</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_to_tup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sec</span><span class="p">):</span>
+        <span class="n">hours</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sec</span> <span class="o">/</span> <span class="mi">3600</span><span class="p">)</span>
+        <span class="n">sec</span> <span class="o">=</span> <span class="n">sec</span> <span class="o">%</span> <span class="mi">3600</span>
+        <span class="n">mins</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sec</span> <span class="o">/</span> <span class="mi">60</span><span class="p">)</span>
+        <span class="n">sec</span> <span class="o">=</span> <span class="n">sec</span> <span class="o">%</span> <span class="mi">60</span>
+        <span class="n">secs</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sec</span><span class="p">)</span>
+        <span class="n">microsecs</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">sec</span> <span class="o">-</span> <span class="n">secs</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000000</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">hours</span><span class="p">,</span> <span class="n">mins</span><span class="p">,</span> <span class="n">secs</span><span class="p">,</span> <span class="n">microsecs</span>
 
     <span class="k">def</span> <span class="nf">_to_sec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tup</span><span class="p">):</span>
         <span class="n">hours</span><span class="p">,</span> <span class="n">mins</span><span class="p">,</span> <span class="n">secs</span><span class="p">,</span> <span class="n">msecs</span> <span class="o">=</span> <span class="n">tup</span>
@@ -381,8 +405,16 @@
             <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokenize_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tokens</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_elem</span><span class="p">(</span><span class="n">TextStim</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">onset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                   <span class="n">order</span><span class="o">=</span><span class="n">i</span><span class="p">))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TextStim</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">onset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">order</span><span class="o">=</span><span class="n">i</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">e</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">))</span></div>
 </pre></div>
 
            </div>
@@ -419,7 +451,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

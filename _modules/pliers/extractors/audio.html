@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pliers.extractors.audio &mdash; pliers 0.2 documentation</title>
+  <title>pliers.extractors.audio &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="../../../index.html"/>
+    <link rel="top" title="pliers 0.3.0 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -165,13 +165,13 @@
             
   <h1>Source code for pliers.extractors.audio</h1><div class="highlight"><pre>
 <span></span><span class="sd">&#39;&#39;&#39; Extractors that operate on AudioStim inputs. &#39;&#39;&#39;</span>
-
 <span class="kn">from</span> <span class="nn">pliers.stimuli.audio</span> <span class="k">import</span> <span class="n">AudioStim</span>
 <span class="kn">from</span> <span class="nn">pliers.stimuli.text</span> <span class="k">import</span> <span class="n">ComplexTextStim</span>
 <span class="kn">from</span> <span class="nn">pliers.extractors.base</span> <span class="k">import</span> <span class="n">Extractor</span><span class="p">,</span> <span class="n">ExtractorResult</span>
 <span class="kn">from</span> <span class="nn">pliers.utils</span> <span class="k">import</span> <span class="n">attempt_to_import</span><span class="p">,</span> <span class="n">verify_dependencies</span><span class="p">,</span> <span class="n">listify</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">fft</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABCMeta</span>
 
 <span class="n">librosa</span> <span class="o">=</span> <span class="n">attempt_to_import</span><span class="p">(</span><span class="s1">&#39;librosa&#39;</span><span class="p">)</span>
 
@@ -247,9 +247,12 @@
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">freq_bins</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="n">bins</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">bin_size</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">freq_bins</span>
+            <span class="n">bin_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">freq_bins</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">freq_bins</span><span class="p">):</span>
-                <span class="n">bins</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span> <span class="o">*</span> <span class="n">bin_size</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">bin_size</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">freq_bins</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">bins</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span> <span class="o">*</span> <span class="n">bin_size</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">bins</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span> <span class="o">*</span> <span class="n">bin_size</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">bin_size</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">freq_bins</span> <span class="o">=</span> <span class="n">bins</span>
 
         <span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">_</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">fb</span> <span class="k">for</span> <span class="n">fb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">freq_bins</span><span class="p">]</span>
@@ -300,7 +303,7 @@
                                <span class="n">orders</span><span class="o">=</span><span class="n">orders</span><span class="p">)</span></div>
 
 
-<span class="k">class</span> <span class="nc">LibrosaFeatureExtractor</span><span class="p">(</span><span class="n">AudioExtractor</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">LibrosaFeatureExtractor</span><span class="p">(</span><span class="n">AudioExtractor</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
 
     <span class="sd">&#39;&#39;&#39; A generic class for audio extractors using the librosa library. &#39;&#39;&#39;</span>
 
@@ -318,20 +321,53 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feature</span>
 
     <span class="k">def</span> <span class="nf">_get_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stim</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feature</span><span class="p">)(</span>
-            <span class="n">y</span><span class="o">=</span><span class="n">stim</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">stim</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span><span class="p">,</span>
-            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">librosa_kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feature</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;zero_crossing_rate&#39;</span><span class="p">,</span> <span class="s1">&#39;rms&#39;</span><span class="p">,</span> <span class="s1">&#39;spectral_flatness&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feature</span><span class="p">)(</span>
+                <span class="n">y</span><span class="o">=</span><span class="n">stim</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">librosa_kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feature</span> <span class="o">==</span> <span class="s1">&#39;tonnetz&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feature</span><span class="p">)(</span>
+                <span class="n">y</span><span class="o">=</span><span class="n">stim</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">stim</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">librosa_kwargs</span><span class="p">)</span>
+            
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feature</span> <span class="ow">in</span><span class="p">[</span> <span class="s1">&#39;onset_detect&#39;</span><span class="p">,</span> <span class="s1">&#39;onset_strength_multi&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">librosa</span><span class="o">.</span><span class="n">onset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feature</span><span class="p">)(</span>
+                <span class="n">y</span><span class="o">=</span><span class="n">stim</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">stim</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span><span class="p">,</span>
+                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">librosa_kwargs</span><span class="p">)</span>
+            
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feature</span> <span class="ow">in</span><span class="p">[</span> <span class="s1">&#39;tempo&#39;</span><span class="p">,</span> <span class="s1">&#39;beat_track&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">librosa</span><span class="o">.</span><span class="n">beat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feature</span><span class="p">)(</span>
+                <span class="n">y</span><span class="o">=</span><span class="n">stim</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">stim</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span><span class="p">,</span>
+                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">librosa_kwargs</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feature</span> <span class="ow">in</span><span class="p">[</span> <span class="s1">&#39;harmonic&#39;</span><span class="p">,</span> <span class="s1">&#39;percussive&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">librosa</span><span class="o">.</span><span class="n">effects</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feature</span><span class="p">)(</span>
+                <span class="n">y</span><span class="o">=</span><span class="n">stim</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">librosa_kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feature</span><span class="p">)(</span>
+                <span class="n">y</span><span class="o">=</span><span class="n">stim</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">stim</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span><span class="p">,</span>
+                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">librosa_kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stim</span><span class="p">):</span>
+        
         <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_values</span><span class="p">(</span><span class="n">stim</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feature</span><span class="o">==</span><span class="s1">&#39;beat_track&#39;</span><span class="p">:</span>
+            <span class="n">beats</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">values</span><span class="o">=</span><span class="n">beats</span>
+
         <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">T</span>
-        <span class="n">feature_names</span> <span class="o">=</span> <span class="n">listify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_feature_names</span><span class="p">())</span>
         <span class="n">n_frames</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
+        <span class="n">feature_names</span> <span class="o">=</span> <span class="n">listify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_feature_names</span><span class="p">())</span>
+
         <span class="n">onsets</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">frames_to_time</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_frames</span><span class="p">),</span>
                                         <span class="n">sr</span><span class="o">=</span><span class="n">stim</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">,</span>
                                         <span class="n">hop_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span><span class="p">)</span>
+        
         <span class="n">onsets</span> <span class="o">=</span> <span class="n">onsets</span> <span class="o">+</span> <span class="n">stim</span><span class="o">.</span><span class="n">onset</span> <span class="k">if</span> <span class="n">stim</span><span class="o">.</span><span class="n">onset</span> <span class="k">else</span> <span class="n">onsets</span>
+        
         <span class="n">durations</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">stim</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">)]</span> <span class="o">*</span> <span class="n">n_frames</span>
+           
         <span class="k">return</span> <span class="n">ExtractorResult</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">stim</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="n">feature_names</span><span class="p">,</span>
                                <span class="n">onsets</span><span class="o">=</span><span class="n">onsets</span><span class="p">,</span> <span class="n">durations</span><span class="o">=</span><span class="n">durations</span><span class="p">,</span>
                                <span class="n">orders</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_frames</span><span class="p">)))</span>
@@ -358,6 +394,17 @@
     <span class="n">_feature</span> <span class="o">=</span> <span class="s1">&#39;spectral_bandwidth&#39;</span></div>
 
 
+<span class="k">class</span> <span class="nc">SpectralFlatnessExtractor</span><span class="p">(</span><span class="n">LibrosaFeatureExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Computes the spectral flatness from audio using the</span>
+<span class="sd">    Librosa library.</span>
+
+<span class="sd">    For details on argument specification visit:</span>
+<span class="sd">    https://librosa.github.io/librosa/feature.html.&#39;&#39;&#39;</span>
+
+    <span class="n">_feature</span> <span class="o">=</span> <span class="s1">&#39;spectral_flatness&#39;</span>
+
+
 <div class="viewcode-block" id="SpectralContrastExtractor"><a class="viewcode-back" href="../../../generated/pliers.extractors.SpectralContrastExtractor.html#pliers.extractors.SpectralContrastExtractor">[docs]</a><span class="k">class</span> <span class="nc">SpectralContrastExtractor</span><span class="p">(</span><span class="n">LibrosaFeatureExtractor</span><span class="p">):</span>
 
     <span class="sd">&#39;&#39;&#39; Extracts the spectral contrast from audio using the Librosa library.</span>
@@ -373,8 +420,9 @@
             <span class="n">n_bands</span><span class="o">=</span><span class="n">n_bands</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">get_feature_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;spectral_contrast_band_</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">i</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_bands</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span></div>
+        <span class="n">abc</span><span class="o">=</span> <span class="p">[</span><span class="s1">&#39;spectral_contrast_band_</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">i</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_bands</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">abc</span></div>
 
 
 <div class="viewcode-block" id="SpectralRolloffExtractor"><a class="viewcode-back" href="../../../generated/pliers.extractors.SpectralRolloffExtractor.html#pliers.extractors.SpectralRolloffExtractor">[docs]</a><span class="k">class</span> <span class="nc">SpectralRolloffExtractor</span><span class="p">(</span><span class="n">LibrosaFeatureExtractor</span><span class="p">):</span>
@@ -404,20 +452,60 @@
         <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;coefficient_</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span></div>
 
 
-<div class="viewcode-block" id="RMSEExtractor"><a class="viewcode-back" href="../../../generated/pliers.extractors.RMSEExtractor.html#pliers.extractors.RMSEExtractor">[docs]</a><span class="k">class</span> <span class="nc">RMSEExtractor</span><span class="p">(</span><span class="n">LibrosaFeatureExtractor</span><span class="p">):</span>
+<div class="viewcode-block" id="RMSExtractor"><a class="viewcode-back" href="../../../generated/pliers.extractors.RMSExtractor.html#pliers.extractors.RMSExtractor">[docs]</a><span class="k">class</span> <span class="nc">RMSExtractor</span><span class="p">(</span><span class="n">LibrosaFeatureExtractor</span><span class="p">):</span>
 
-    <span class="sd">&#39;&#39;&#39; Extracts root mean square (RMS) energy from audio using the Librosa</span>
+    <span class="sd">&#39;&#39;&#39; Extracts root mean square (RMS) from audio using the Librosa</span>
 <span class="sd">    library.</span>
 
 <span class="sd">    For details on argument specification visit:</span>
 <span class="sd">    https://librosa.github.io/librosa/feature.html.&#39;&#39;&#39;</span>
 
-    <span class="n">_feature</span> <span class="o">=</span> <span class="s1">&#39;rmse&#39;</span>
+    <span class="n">_feature</span> <span class="o">=</span> <span class="s1">&#39;rms&#39;</span></div>
 
-    <span class="k">def</span> <span class="nf">_get_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stim</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feature</span><span class="p">)(</span>
-            <span class="n">y</span><span class="o">=</span><span class="n">stim</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">librosa_kwargs</span><span class="p">)</span></div>
 
+<span class="k">class</span> <span class="nc">OnsetDetectExtractor</span><span class="p">(</span><span class="n">LibrosaFeatureExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Detects the basic onset (onset_detect) from audio using the Librosa</span>
+<span class="sd">    library.</span>
+
+<span class="sd">    For details on argument specification visit:</span>
+<span class="sd">    https://librosa.github.io/librosa/feature.html.&#39;&#39;&#39;</span>
+
+    <span class="n">_feature</span> <span class="o">=</span> <span class="s1">&#39;onset_detect&#39;</span>
+
+
+<span class="k">class</span> <span class="nc">TempoExtractor</span><span class="p">(</span><span class="n">LibrosaFeatureExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Detects the tempo (tempo) from audio using the Librosa</span>
+<span class="sd">    library.</span>
+
+<span class="sd">    For details on argument specification visit:</span>
+<span class="sd">    https://librosa.github.io/librosa/feature.html.&#39;&#39;&#39;</span>
+
+    <span class="n">_feature</span> <span class="o">=</span> <span class="s1">&#39;tempo&#39;</span>
+
+
+<span class="k">class</span> <span class="nc">BeatTrackExtractor</span><span class="p">(</span><span class="n">LibrosaFeatureExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Dynamic programming beat tracker (beat_track) from audio using the Librosa</span>
+<span class="sd">    library.</span>
+
+<span class="sd">    For details on argument specification visit:</span>
+<span class="sd">    https://librosa.github.io/librosa/feature.html.&#39;&#39;&#39;</span>
+
+    <span class="n">_feature</span> <span class="o">=</span> <span class="s1">&#39;beat_track&#39;</span>
+
+
+<span class="k">class</span> <span class="nc">OnsetStrengthMultiExtractor</span><span class="p">(</span><span class="n">LibrosaFeatureExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;Computes the spectral flux onset strength envelope across multiple channels (onset_strength_multi) from audio using the Librosa</span>
+<span class="sd">    library.</span>
+
+<span class="sd">    For details on argument specification visit:</span>
+<span class="sd">    https://librosa.github.io/librosa/feature.html.&#39;&#39;&#39;</span>
+
+    <span class="n">_feature</span> <span class="o">=</span> <span class="s1">&#39;onset_strength_multi&#39;</span>
+   
 
 <div class="viewcode-block" id="ZeroCrossingRateExtractor"><a class="viewcode-back" href="../../../generated/pliers.extractors.ZeroCrossingRateExtractor.html#pliers.extractors.ZeroCrossingRateExtractor">[docs]</a><span class="k">class</span> <span class="nc">ZeroCrossingRateExtractor</span><span class="p">(</span><span class="n">LibrosaFeatureExtractor</span><span class="p">):</span>
 
@@ -426,11 +514,7 @@
 <span class="sd">    For details on argument specification visit:</span>
 <span class="sd">    https://librosa.github.io/librosa/feature.html.&#39;&#39;&#39;</span>
 
-    <span class="n">_feature</span> <span class="o">=</span> <span class="s1">&#39;zero_crossing_rate&#39;</span>
-
-    <span class="k">def</span> <span class="nf">_get_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stim</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feature</span><span class="p">)(</span>
-            <span class="n">y</span><span class="o">=</span><span class="n">stim</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">librosa_kwargs</span><span class="p">)</span></div>
+    <span class="n">_feature</span> <span class="o">=</span> <span class="s1">&#39;zero_crossing_rate&#39;</span></div>
 
 
 <div class="viewcode-block" id="ChromaSTFTExtractor"><a class="viewcode-back" href="../../../generated/pliers.extractors.ChromaSTFTExtractor.html#pliers.extractors.ChromaSTFTExtractor">[docs]</a><span class="k">class</span> <span class="nc">ChromaSTFTExtractor</span><span class="p">(</span><span class="n">LibrosaFeatureExtractor</span><span class="p">):</span>
@@ -532,11 +616,7 @@
     <span class="n">_feature</span> <span class="o">=</span> <span class="s1">&#39;tonnetz&#39;</span>
 
     <span class="k">def</span> <span class="nf">get_feature_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;tonal_centroid_</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">)]</span>
-
-    <span class="k">def</span> <span class="nf">_get_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stim</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feature</span><span class="p">)(</span>
-            <span class="n">y</span><span class="o">=</span><span class="n">stim</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">stim</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">librosa_kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;tonal_centroid_</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">)]</span></div>
 
 
 <div class="viewcode-block" id="TempogramExtractor"><a class="viewcode-back" href="../../../generated/pliers.extractors.TempogramExtractor.html#pliers.extractors.TempogramExtractor">[docs]</a><span class="k">class</span> <span class="nc">TempogramExtractor</span><span class="p">(</span><span class="n">LibrosaFeatureExtractor</span><span class="p">):</span>
@@ -555,6 +635,26 @@
 
     <span class="k">def</span> <span class="nf">get_feature_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;tempo_</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">win_length</span><span class="p">)]</span></div>
+
+
+<span class="k">class</span> <span class="nc">HarmonicExtractor</span><span class="p">(</span><span class="n">LibrosaFeatureExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Extracts the harmonic elements from an audio time-series using the Librosa library.</span>
+
+<span class="sd">    For details on argument specification visit:</span>
+<span class="sd">    https://librosa.github.io/librosa/effect.html.&#39;&#39;&#39;</span>
+
+    <span class="n">_feature</span> <span class="o">=</span> <span class="s1">&#39;harmonic&#39;</span>
+
+
+<span class="k">class</span> <span class="nc">PercussiveExtractor</span><span class="p">(</span><span class="n">LibrosaFeatureExtractor</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39; Extracts the percussive elements from an audio time-series using the Librosa library.</span>
+
+<span class="sd">    For details on argument specification visit:</span>
+<span class="sd">    https://librosa.github.io/librosa/effect.html.&#39;&#39;&#39;</span>
+
+    <span class="n">_feature</span> <span class="o">=</span> <span class="s1">&#39;percussive&#39;</span>
 </pre></div>
 
            </div>
@@ -591,7 +691,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

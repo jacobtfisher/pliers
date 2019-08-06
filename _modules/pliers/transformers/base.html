@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pliers.transformers.base &mdash; pliers 0.2 documentation</title>
+  <title>pliers.transformers.base &mdash; pliers 0.3.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="pliers 0.2 documentation" href="../../../index.html"/>
+    <link rel="top" title="pliers 0.3.0 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -204,16 +204,17 @@
     <span class="c1"># the input would have to be a CompoundStim with both audio and text slots.</span>
     <span class="n">_optional_input_type</span> <span class="o">=</span> <span class="p">()</span>
 
-<div class="viewcode-block" id="Transformer.__init__"><a class="viewcode-back" href="../../../generated/pliers.transformers.Transformer.html#pliers.converters.Transformer.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Transformer.__init__"><a class="viewcode-back" href="../../../generated/pliers.transformers.Transformer.html#pliers.converters.Transformer.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Transformer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_memoize</span><span class="p">(</span><span class="n">transform</span><span class="p">):</span>
         <span class="nd">@wraps</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stim</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="n">use_cache</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get_option</span><span class="p">(</span><span class="s1">&#39;cache_transformers&#39;</span><span class="p">)</span> \
-                <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stim</span><span class="p">,</span> <span class="n">Stim</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stim</span><span class="p">,</span> <span class="p">(</span><span class="n">Stim</span><span class="p">,</span> <span class="n">string_types</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">use_cache</span><span class="p">:</span>
                 <span class="n">key</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">((</span><span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="nb">hash</span><span class="p">(</span><span class="n">stim</span><span class="p">)))</span>
                 <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">_cache</span><span class="p">:</span>
@@ -295,6 +296,7 @@
                 <span class="n">result</span> <span class="o">=</span> <span class="n">_log_transformation</span><span class="p">(</span><span class="n">validated_stim</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">isgenerator</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
                     <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_propagate_context</span><span class="p">(</span><span class="n">validated_stim</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">result</span></div>
 
     <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stim</span><span class="p">):</span>
@@ -333,7 +335,8 @@
             <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Transformer of class </span><span class="si">%s</span><span class="s2"> requires multiple mandatory &quot;</span>
                    <span class="s2">&quot;inputs, so the passed input Stim must be a CompoundStim&quot;</span>
                    <span class="s2">&quot;--which it isn&#39;t.&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
 
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stim</span><span class="p">,</span> <span class="n">mandatory</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">mandatory</span> <span class="ow">and</span>
                                                <span class="nb">isinstance</span><span class="p">(</span><span class="n">stim</span><span class="p">,</span> <span class="n">optional</span><span class="p">))</span>
@@ -351,6 +354,18 @@
 
         <span class="k">return</span> <span class="p">(</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">stims</span><span class="p">)</span> <span class="k">if</span> <span class="n">t</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_propagate_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stim</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">isiterable</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_propagate_context</span><span class="p">(</span><span class="n">stim</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">onset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">onset</span> <span class="o">=</span> <span class="n">stim</span><span class="o">.</span><span class="n">onset</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">duration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">duration</span> <span class="o">=</span> <span class="n">stim</span><span class="o">.</span><span class="n">duration</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">order</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">stim</span><span class="o">.</span><span class="n">order</span>
 
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stim</span><span class="p">):</span>
@@ -386,10 +401,38 @@
         <span class="n">batches</span> <span class="o">=</span> <span class="n">batch_iterable</span><span class="p">(</span><span class="n">stims</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_size</span><span class="p">)</span>
         <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">progress_bar_wrapper</span><span class="p">(</span><span class="n">batches</span><span class="p">):</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">use_cache</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get_option</span><span class="p">(</span><span class="s1">&#39;cache_transformers&#39;</span><span class="p">)</span>
+            <span class="n">target_inds</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">non_cached</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">stim</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">((</span><span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="nb">hash</span><span class="p">(</span><span class="n">stim</span><span class="p">)))</span>
+                <span class="c1"># If using the cache, only transform stims that aren&#39;t in the</span>
+                <span class="c1"># cache and haven&#39;t already appeared in the batch</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">use_cache</span> <span class="ow">and</span> <span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">_cache</span> <span class="ow">or</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">target_inds</span><span class="p">)):</span>
+                    <span class="n">target_inds</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">non_cached</span><span class="p">)</span>
+                    <span class="n">non_cached</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stim</span><span class="p">)</span>
+
+            <span class="c1"># _transform will likely fail if given an empty list</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">non_cached</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">batch_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="p">(</span><span class="n">non_cached</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">batch_results</span> <span class="o">=</span> <span class="p">[]</span>
+
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">stim</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">batch</span><span class="p">):</span>
-                <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_log_transformation</span><span class="p">(</span><span class="n">stim</span><span class="p">,</span> <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="p">)</span>
-            <span class="n">results</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">((</span><span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="nb">hash</span><span class="p">(</span><span class="n">stim</span><span class="p">)))</span>
+                <span class="c1"># Use the target index to get the result from batch_results</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">target_inds</span><span class="p">:</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">batch_results</span><span class="p">[</span><span class="n">target_inds</span><span class="p">[</span><span class="n">key</span><span class="p">]]</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">_log_transformation</span><span class="p">(</span><span class="n">stim</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_propagate_context</span><span class="p">(</span><span class="n">stim</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">use_cache</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">isgenerator</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+                            <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+                        <span class="n">_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+                <span class="c1"># Otherwise, the result should be in the cache</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_cache</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">results</span>
 
     <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stim</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -474,7 +517,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.2',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
