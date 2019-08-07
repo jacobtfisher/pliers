@@ -82,3 +82,5 @@ Alternatively, you can store the appropriate values as environment variables, in
     from pliers.extractors import GoogleVisionAPIFaceExtractor
     # Works fine if GOOGLE_APPLICATION_CREDENTIALS is set in the environment
     ext = GoogleVisionAPIFaceExtractor()
+
+Note that each of the APIs with which |pliers| integrates has its own idiosyncracies in the sorts of operations that can be performed and the size of files that can be uploaded. Please familiarize yourself with the documentation for each of the APIs you plan to interface with using |pliers| before beginning to process your stimuli. 
